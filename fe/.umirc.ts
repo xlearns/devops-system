@@ -1,6 +1,8 @@
 import { defineConfig } from '@umijs/max';
 
 export default defineConfig({
+  hash: true,
+  devtool: 'source-map',
   antd: {},
   access: {},
   model: {},
@@ -8,6 +10,13 @@ export default defineConfig({
   request: {},
   layout: {
     title: '@umijs/max',
+  },
+  proxy: {
+    '/api/': {
+      target: 'https://preview.pro.ant.design',
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
   },
   routes: [
     {
@@ -32,4 +41,3 @@ export default defineConfig({
   ],
   npmClient: 'pnpm',
 });
-
