@@ -4,6 +4,6 @@ import { RestCrudController } from './rest-crud.controller';
 
 @Module({
   controllers: [RestCrudController],
-  providers: [RestCrudService]
+  providers: [RestCrudService],
 })
 export class RestCrudModule {}
