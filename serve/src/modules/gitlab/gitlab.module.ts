@@ -4,8 +4,8 @@ import { GitlabService } from './gitlab.service';
 
 @Module({
   imports: [HttpModule],
-  exports: [GitlabService],
   providers: [GitlabService],
+  exports: [GitlabService],
   controllers: [],
 })
 export class GitlabModule {}

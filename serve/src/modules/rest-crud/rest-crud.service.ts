@@ -8,8 +8,8 @@ export class RestCrudService {
     return 'This action adds a new restCrud';
   }
 
-  findAll() {
-    return `This action returns all restCrud`;
+  findAll(str:string) {
+    return str;
   }
 
   findOne(id: number) {
