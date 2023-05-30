@@ -10,6 +10,12 @@ import { JenkinsModule } from './modules/jenkins/jenkins.module';
 import { RobotModule } from './modules/robot/robot.module';
 import { ConfigService } from '@nestjs/config';
 import { GitlabModule } from './modules/gitlab/gitlab.module';
+import { UserModule } from './modules/user/user.module';
+import { BranchModule } from './modules/branch/branch.module';
+import { BuildModule } from './modules/build/build.module';
+import { NoticesModule } from './modules/notices/notices.module';
+import { ProcessModule } from './modules/process/process.module';
+import { ProjectModule } from './modules/project/project.module';
 
 
 @Module({
@@ -38,7 +44,13 @@ import { GitlabModule } from './modules/gitlab/gitlab.module';
     MailModule,
     JenkinsModule,
     RobotModule,
-    GitlabModule
+    GitlabModule,
+    UserModule,
+    BranchModule,
+    BuildModule,
+    NoticesModule,
+    ProcessModule,
+    ProjectModule
   ],
   controllers: [AppController],
   providers: [AppService],
