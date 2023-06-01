@@ -11,13 +11,18 @@ import {
   Query,
 } from '@nestjs/common';
 import { RestCrudService } from './rest-crud.service';
-import { GitlabService } from './../gitlab/gitlab.service';
 import { CreateRestCrudDto } from './dto/create-rest-crud.dto';
 import { UpdateRestCrudDto } from './dto/update-rest-crud.dto';
 
+//gitlab service
+import { GitlabService } from './../gitlab/gitlab.service';
+
+//jenkins jenkins
+import { JenkinsService } from './../jenkins/jenkins.service';
+
 @Controller('rest-crud')
 export class RestCrudController {
-  constructor(private readonly restCrudService: RestCrudService,private readonly gitlab:GitlabService) {}
+  constructor(private readonly restCrudService: RestCrudService,private readonly gitlab:GitlabService,private readonly Jenkins:JenkinsService) {}
 
   @Post()
   create(@Body() createRestCrudDto: CreateRestCrudDto, @Headers() header) {
@@ -27,12 +32,45 @@ export class RestCrudController {
 
   @Get()
   async findAll(@Request() req) {
+    return 'ok'
+  }
+
+  @Get('/gitlab')
+  async getGitLab(@Request() req) {
     const { query } = req;
-    console.log(1,query,this.gitlab.getToken());
+    if(!this.gitlab.getToken()) return 'token undefined'
     const data = await this.gitlab.getRepositories()
     console.log(2,data)
     return this.restCrudService.findAll(JSON.stringify(data));
   }
+
+  @Get('/jenkins')
+  async getJenkins(@Request() req) {
+    const { query } = req;
+    const config = `
+      pipeline {
+        agent any
+        stages {
+            stage('Hello') {
+                steps {
+                    echo 'Hello Jenkins update pipeline script'
+                }
+            }
+        }
+    }
+    `
+    const data = await this.Jenkins.buildJenkins({job:"hello",config})
+    return this.restCrudService.findAll(JSON.stringify(data));
+  }
+
+  @Get('/jenkinsGet')
+  async getJenkinsPro(@Request() req) {
+    const {query} = req
+    const {name} = query
+    const data = await this.Jenkins.getJenkinsConsole(name);
+    return  {...data}
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string, @Query() query) {
