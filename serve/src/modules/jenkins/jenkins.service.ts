@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Jenkins from 'jenkins';
-import {PipelineConfigXml} from '../../shared/utils/jenkins'
+import {PipelineConfigXml} from '@/shared/utils/jenkins'
 
 @Injectable()
 export class JenkinsService {

@@ -15,10 +15,10 @@ import { CreateRestCrudDto } from './dto/create-rest-crud.dto';
 import { UpdateRestCrudDto } from './dto/update-rest-crud.dto';
 
 //gitlab service
-import { GitlabService } from './../gitlab/gitlab.service';
+import { GitlabService } from '@/modules/gitlab/gitlab.service';
 
 //jenkins jenkins
-import { JenkinsService } from './../jenkins/jenkins.service';
+import { JenkinsService } from '@/modules/jenkins/jenkins.service';
 
 @Controller('rest-crud')
 export class RestCrudController {

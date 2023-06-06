@@ -3,19 +3,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RestCrudModule } from './modules/rest-crud/rest-crud.module';
+import { RestCrudModule } from './modules/api/rest-crud/rest-crud.module';
 import { AuthMiddleware } from './shared/middleware/auth.middleware';
 import { MailModule } from './modules/mail/mail.module';
 import { JenkinsModule } from './modules/jenkins/jenkins.module';
 import { RobotModule } from './modules/robot/robot.module';
 import { ConfigService } from '@nestjs/config';
 import { GitlabModule } from './modules/gitlab/gitlab.module';
-import { UserModule } from './modules/user/user.module';
-import { BranchModule } from './modules/branch/branch.module';
-import { BuildModule } from './modules/build/build.module';
-import { NoticesModule } from './modules/notices/notices.module';
-import { ProcessModule } from './modules/process/process.module';
-import { ProjectModule } from './modules/project/project.module';
+import { UserModule } from './modules/api/user/user.module';
+import { BranchModule } from './modules/api/branch/branch.module';
+import { BuildModule } from './modules/api/build/build.module';
+import { NoticesModule } from './modules/api/notices/notices.module';
+import { ProcessModule } from './modules/api/process/process.module';
+import { ProjectModule } from './modules/api/project/project.module';
 
 
 @Module({
