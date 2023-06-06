@@ -3,8 +3,6 @@
 
 declare namespace API {
   interface PageInfo {
-    /** 
-1 */
     current?: number;
     pageSize?: number;
     total?: number;
@@ -12,9 +10,7 @@ declare namespace API {
   }
 
   interface PageInfo_UserInfo_ {
-    /** 
-1 */
-    current?: number;
+    currentPage?: number;
     pageSize?: number;
     total?: number;
     list?: Array<UserInfo>;

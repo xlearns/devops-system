@@ -9,7 +9,7 @@ export async function queryUserList(
     /** keyword */
     keyword?: string;
     /** current */
-    current?: number;
+    page?: number;
     /** pageSize */
     pageSize?: number;
   },

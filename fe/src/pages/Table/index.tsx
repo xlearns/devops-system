@@ -161,18 +161,26 @@ const TableList: React.FC<unknown> = () => {
             新建
           </Button>,
         ]}
-        request={async (params, sorter, filter) => {
+        request={async ({ current, ...params }, sorter, filter) => {
           const { data, success } = await queryUserList({
             ...params,
+            page: current,
             // FIXME: remove @ts-ignore
             // @ts-ignore
             sorter,
             filter,
           });
+          const { list, total, currentPage, pageSize } = data || {};
           return {
-            data: data?.list || [],
+            data: list || [],
             success,
+            total: total,
+            pageSize: pageSize,
+            current: currentPage,
           };
+        }}
+        pagination={{
+          defaultPageSize: 10,
         }}
         columns={columns}
         rowSelection={{
