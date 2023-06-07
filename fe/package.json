@@ -2,13 +2,17 @@
   "private": true,
   "author": "xlearns <2447684095@qq.com>",
   "scripts": {
-    "dev": "max dev",
+    "dev": "npm run start:dev",
     "build": "max build",
     "format": "prettier --cache --write .",
     "prepare": "husky install",
     "postinstall": "max setup",
     "setup": "max setup",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev max dev",
+    "start:test": "cross-env REACT_APP_ENV=test MOCK=none UMI_ENV=dev max dev",
+    "start:pre": "cross-env REACT_APP_ENV=pre  MOCK=none UMI_ENV=dev max dev",
+    "preview": "npm run build && max preview --port 8000"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
@@ -19,6 +23,7 @@
   "devDependencies": {
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
+    "cross-env": "^7.0.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
