@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class User {
+export class Process {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -9,14 +9,17 @@ export class User {
   name: string;
 
   @Column('varchar')
-  password: string;
+  workflowTplId: string;
 
   @Column('varchar')
-  email: string
+  processStatus: string;
 
   @Column('varchar')
-  avatarUrl: string
-  
+  createdUser: string;
+
   @Column('varchar')
-  webUrl: string
+  updateUser: string;
+
+  @Column('varchar')
+  branchIds: string;
 }

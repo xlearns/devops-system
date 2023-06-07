@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class User {
+export class TestRecord {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -9,14 +9,20 @@ export class User {
   name: string;
 
   @Column('varchar')
-  password: string;
+  desc: string;
 
   @Column('varchar')
-  email: string
+  submitUserId: string;
 
   @Column('varchar')
-  avatarUrl: string
-  
+  testUserId: string;
+
   @Column('varchar')
-  webUrl: string
+  processId: string;
+
+  @Column('varchar')
+  testStatus: string;
+
+  @Column('varchar')
+  branchIds: string;
 }
