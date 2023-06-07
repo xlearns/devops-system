@@ -1,11 +1,17 @@
 export default {
   dev: {
-    '/api/': {
+    '/api': {
       target: 'https://preview.pro.ant.design',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
-  test: {},
+  test: {
+    '/api': {
+      target: 'http://localhost:7001/',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
   pre: {},
 };
