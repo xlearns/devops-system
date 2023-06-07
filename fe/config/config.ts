@@ -14,7 +14,12 @@ export default defineConfig({
   request: {},
   layout: {
     title: '@umijs/max',
+    locale: false,
+    siderWidth: 200,
   },
+  // alias: {
+  //   '@': '/src',
+  // },
   proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
   routes,
   npmClient: 'pnpm',
