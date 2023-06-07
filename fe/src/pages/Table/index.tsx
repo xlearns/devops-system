@@ -70,7 +70,7 @@ const handleRemove = async (selectedRows: API.UserInfo[]) => {
   if (!selectedRows) return true;
   try {
     await deleteUser({
-      userId: selectedRows.find((row) => row.id)?.id || '',
+      ids: selectedRows.map((item) => item.id),
     });
     hide();
     message.success('删除成功，即将刷新');

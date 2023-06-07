@@ -1,4 +1,6 @@
-const users = Array.from({ length: 100 }).map((_, index: number) => {
+//@ts-nocheck
+
+const users = Array.from({ length: 100 }).map((_, index) => {
   return {
     id: index,
     name: `Umi ${index}`,
@@ -8,7 +10,7 @@ const users = Array.from({ length: 100 }).map((_, index: number) => {
 });
 
 export default {
-  'GET /api/v1/queryUserList': (req: any, res: any) => {
+  'GET /api/v1/queryUserList': (req, res) => {
     const page = Number(req.query.page) || 1;
     const pageSize = Number(req.query.pageSize) || 10;
     const start = (page - 1) * pageSize;
@@ -25,7 +27,7 @@ export default {
       errorCode: 0,
     });
   },
-  'POST /api/v1/user': (req: any, res: any) => {
+  'POST /api/v1/user': (req, res) => {
     const { name, nickName, gender } = req.body;
     if (!name || !nickName) {
       return res.json({
@@ -47,7 +49,7 @@ export default {
       errorCode: 0,
     });
   },
-  'PUT /api/v1/user/:id': (req: any, res: any) => {
+  'PUT /api/v1/user/:id': (req, res) => {
     const id = req.params.id;
     let user = users.find((u) => u.id === Number(id));
     if (!user) {
@@ -73,7 +75,7 @@ export default {
       errorCode: 0,
     });
   },
-  'DELETE /api/v1/user/:id': (req: any, res: any) => {
+  'DELETE /api/v1/user/:id': (req, res) => {
     const id = req.params.id;
     const index = users.findIndex((u) => u.id === Number(id));
     if (index === -1) {
@@ -87,6 +89,29 @@ export default {
     return res.json({
       success: true,
       data: deletedUser,
+      errorCode: 0,
+    });
+  },
+  'DELETE /api/v1/user': (req, res) => {
+    const ids = req.body.ids;
+    if (!ids || !Array.isArray(ids)) {
+      return res.json({
+        success: false,
+        errorCode: 400,
+        message: 'Bad request',
+      });
+    }
+    const deletedUsers = [];
+    ids.forEach((id) => {
+      const index = users.findIndex((u) => u.id === id);
+      if (index !== -1) {
+        const deletedUser = users.splice(index, 1)[0];
+        deletedUsers.push(deletedUser);
+      }
+    });
+    return res.json({
+      success: true,
+      data: deletedUsers,
       errorCode: 0,
     });
   },

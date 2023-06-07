@@ -82,15 +82,14 @@ export async function modifyUser(
 export async function deleteUser(
   params: {
     // path
-    /** userId */
-    userId?: string;
+    /** ids */
+    ids?: unknown[];
   },
   options?: { [key: string]: any },
 ) {
-  const { userId: param0 } = params;
-  return request<API.Result_string_>(`/api/v1/user/${param0}`, {
+  return request<API.Result_string_>(`/api/v1/user`, {
     method: 'DELETE',
-    params: { ...params },
+    data: { ...params },
     ...(options || {}),
   });
 }
