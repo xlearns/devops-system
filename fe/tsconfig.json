@@ -1,3 +1,9 @@
 {
-  "extends": "./src/.umi/tsconfig.json"
+  "extends": "./src/.umi/tsconfig.json",
+  "compilerOptions": {
+    // 其他选项...
+    "paths": {
+      "@config/*": ["config/*"]
+    }
+  }
 }
