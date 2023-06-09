@@ -10,19 +10,25 @@ export default [
         redirect: '/home',
       },
       {
-        name: '首页',
+        name: 'dashboard',
         path: '/home',
         icon: 'HomeOutlined',
         component: './Home',
       },
       {
-        name: '权限演示',
+        name: 'CICD',
         path: '/access',
         icon: 'CodeOutlined',
         component: './Access',
       },
       {
-        name: ' CRUD 示例',
+        name: '项目管理',
+        path: '/table',
+        icon: 'TableOutlined',
+        component: './Table',
+      },
+      {
+        name: '系统管理',
         path: '/table',
         icon: 'TableOutlined',
         component: './Table',
