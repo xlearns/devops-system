@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ant-page-project-container .ant-page-header-heading {
+    display: flex;
+    justify-content: flex-end;
+}
