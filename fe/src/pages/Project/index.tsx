@@ -4,7 +4,7 @@ import { CheckCard, PageContainer } from "@ant-design/pro-components";
 import { useModel } from "@umijs/max";
 import type { MenuProps } from "antd";
 import { Button, Col, Dropdown, Row, Table } from "antd";
-import React, { memo, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const items: MenuProps["items"] = [
   {
@@ -37,7 +37,7 @@ const columns = [
 ];
 
 function isHasData(data: unknown[]) {
-  if (!Array.isArray(data)) return;
+  if (!Array.isArray(data)) return 
   return data.length > 0 ? true : false;
 }
 
@@ -59,7 +59,7 @@ const Project: React.FC<unknown> = () => {
 
   const list = useMemo(() => {
     if (!isHasData(project)) return <NoData className="h-[400px] w-full" />;
-    if (type == "card")
+    if (type === "card")
       return project.map((_, index) => {
         return (
           <Col span={8} key={index}>
