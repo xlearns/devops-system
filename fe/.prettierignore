@@ -1,3 +1,12 @@
 node_modules
 .umi
 .umi-production
+dist
+.eslintrc.js
+.lintstagedrc
+.prettierrc
+.stylelintrc.js
+.vscode
+mock
+pnpm-lock.yaml
+package.json 

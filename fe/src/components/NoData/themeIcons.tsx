@@ -6,7 +6,7 @@ type CustomIconComponent = React.ComponentType<
 
 export const noFileSvg: CustomIconComponent = () => (
   <svg width="136" height="141" xmlns="http://www.w3.org/2000/svg">
-    <g fill="none" fill-rule="evenodd">
+    <g fill="none">
       <path
         d="M117.144 15.351L130.604.783a2.436 2.436 0 013.198-.334 2.427 2.427 0 01.81 2.978L130.069 13.5l4.462 7.997a6.443 6.443 0 01-.6 7.172c-12.614 15.688-26.192 31.616-41.655 47.977L76.92 57.217c11.059-10.176 20.994-19.484 30.431-30.903a9.668 9.668 0 002.191-6.505c-.119-3.27-.3-8.01-.412-10.985a3.876 3.876 0 012.48-3.764h.001a2.281 2.281 0 013.013 1.5l2.521 8.791z"
         fill="#D7E3F7"

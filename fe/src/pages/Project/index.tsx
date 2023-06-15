@@ -1,26 +1,38 @@
-import NoData from '@/components/NoData';
-import { MoreOutlined } from '@ant-design/icons';
-import { CheckCard, PageContainer } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
-import type { MenuProps } from 'antd';
-import { Button, Col, Dropdown, Row } from 'antd';
-import React from 'react';
+import NoData from "@/components/NoData";
+import { MoreOutlined } from "@ant-design/icons";
+import { CheckCard, PageContainer } from "@ant-design/pro-components";
+import { useModel } from "@umijs/max";
+import type { MenuProps } from "antd";
+import { Button, Col, Dropdown, Row, Table } from "antd";
+import React, { memo, useMemo, useState } from "react";
 
-const items: MenuProps['items'] = [
+const items: MenuProps["items"] = [
   {
-    key: '1',
-    type: 'group',
-    label: 'View',
+    type: "group",
+    label: "View",
     children: [
       {
-        key: '1-1',
-        label: 'Cards',
+        key: "card",
+        label: "Cards",
       },
       {
-        key: '1-2',
-        label: 'Table',
+        key: "table",
+        label: "Table",
       },
     ],
+  },
+];
+
+const columns = [
+  {
+    title: "项目名称",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "更新时间",
+    dataIndex: "update",
+    key: "update",
   },
 ];
 
@@ -29,8 +41,53 @@ function isHasData(data: unknown[]) {
   return data.length > 0 ? true : false;
 }
 
+function useListType() {
+  const [type, setType] = useState("card");
+  const changeListType: MenuProps["onClick"] = (e) => {
+    const { key } = e;
+    setType(key);
+  };
+  return {
+    changeListType,
+    type,
+  };
+}
+
 const Project: React.FC<unknown> = () => {
-  const { project, setProject } = useModel('global');
+  const { project, setProject } = useModel("global");
+  const { type, changeListType } = useListType();
+
+  const list = useMemo(() => {
+    if (!isHasData(project)) return <NoData className="h-[400px] w-full" />;
+    if (type == "card")
+      return project.map((_, index) => {
+        return (
+          <Col span={8} key={index}>
+            <CheckCard
+              title="项目名称"
+              description={`Last update ${index} minutes ago`}
+              value={index}
+              style={{ width: "100%", height: 100, paddingBlock: 10 }}
+            />
+          </Col>
+        );
+      });
+    return (
+      <Table
+        className="w-full"
+        dataSource={
+          project.map((_, index) => {
+            return {
+              name: index,
+              update: `Last update ${index} minutes ago`,
+              key: index,
+            };
+          }) as any[]
+        }
+        columns={columns}
+      />
+    );
+  }, [project, type]);
 
   function createProject() {
     setProject((attr) => {
@@ -45,8 +102,13 @@ const Project: React.FC<unknown> = () => {
         title: (
           <div className="flex items-center gap-[8px]">
             <Dropdown
-              trigger={['click']}
-              menu={{ items }}
+              trigger={["click"]}
+              menu={{
+                items,
+                onClick: changeListType,
+                selectable: true,
+                defaultSelectedKeys: ["card"],
+              }}
               placement="bottomLeft"
               arrow
             >
@@ -61,27 +123,10 @@ const Project: React.FC<unknown> = () => {
     >
       <CheckCard.Group
         onChange={(value) => {
-          console.log('value', value);
+          console.log("value", value);
         }}
       >
-        <Row gutter={[20, 20]}>
-          {isHasData(project) ? (
-            project.map((_, index) => {
-              return (
-                <Col span={8}>
-                  <CheckCard
-                    title="项目名称"
-                    description={`Last update ${index} minutes ago`}
-                    value={index}
-                    style={{ width: '100%', height: 100, paddingBlock: 10 }}
-                  />
-                </Col>
-              );
-            })
-          ) : (
-            <NoData className="h-[400px] w-full" />
-          )}
-        </Row>
+        <Row gutter={[20, 20]}>{list}</Row>
       </CheckCard.Group>
     </PageContainer>
   );

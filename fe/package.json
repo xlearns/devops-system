@@ -2,17 +2,17 @@
   "private": true,
   "author": "xlearns <2447684095@qq.com>",
   "scripts": {
-    "dev": "npm run start:dev",
     "build": "max build",
+    "dev": "npm run start:dev",
     "format": "prettier --cache --write .",
-    "prepare": "husky install",
     "postinstall": "max setup",
+    "prepare": "husky install",
+    "preview": "npm run build && max preview --port 8000",
     "setup": "max setup",
     "start": "npm run dev",
     "start:dev": "cross-env REACT_APP_ENV=dev UMI_ENV=dev max dev",
-    "start:test": "cross-env REACT_APP_ENV=test MOCK=none UMI_ENV=dev max dev",
     "start:pre": "cross-env REACT_APP_ENV=pre  MOCK=none UMI_ENV=dev max dev",
-    "preview": "npm run build && max preview --port 8000"
+    "start:test": "cross-env REACT_APP_ENV=test MOCK=none UMI_ENV=dev max dev"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
@@ -29,7 +29,7 @@
     "prettier": "^2.8.7",
     "prettier-plugin-organize-imports": "^3.2.2",
     "prettier-plugin-packagejson": "^2.4.3",
-    "typescript": "^5.0.3",
-    "tailwindcss": "^3"
+    "tailwindcss": "^3",
+    "typescript": "^5.0.3"
   }
 }
