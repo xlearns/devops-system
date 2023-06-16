@@ -37,7 +37,7 @@ const columns = [
 ];
 
 function isHasData(data: unknown[]) {
-  if (!Array.isArray(data)) return 
+  if (!Array.isArray(data)) return;
   return data.length > 0 ? true : false;
 }
 

@@ -1,6 +1,5 @@
 import { Outlet } from '@umijs/max';
-import React, { useEffect } from 'react';
-
+import React from 'react';
 
 const BlankLayout: React.FC<unknown> = () => {
   return (

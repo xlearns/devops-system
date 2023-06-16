@@ -17,28 +17,25 @@ import { NoticesModule } from './modules/api/notices/notices.module';
 import { ProcessModule } from './modules/api/process/process.module';
 import { ProjectModule } from './modules/api/project/project.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: async (config:ConfigService)=>{
-      return {
-        "type": "mysql",
-        "host": config.get('MYSQL_URL'),
-        "port": config.get('MYSQL_PORT'),
-        "username": config.get('MYSQL_USER'),
-        "password": config.get('MYSQL_PASSWD'),
-        "database": config.get('MYSQL_DB'),
-        "entities": [
-          "dist/src/entities/*.ts"
-        ],
-        "synchronize": config.get('MYSQL_ISSync')
-      }
-    },
-    inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        return {
+          type: 'mysql',
+          host: config.get('MYSQL_URL'),
+          port: config.get('MYSQL_PORT'),
+          username: config.get('MYSQL_USER'),
+          password: config.get('MYSQL_PASSWD'),
+          database: config.get('MYSQL_DB'),
+          entities: ['dist/src/entities/*.ts'],
+          synchronize: config.get('MYSQL_ISSync'),
+        };
+      },
+      inject: [ConfigService],
     }),
     RestCrudModule,
     MailModule,
@@ -50,7 +47,7 @@ import { ProjectModule } from './modules/api/project/project.module';
     BuildModule,
     NoticesModule,
     ProcessModule,
-    ProjectModule
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

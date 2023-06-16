@@ -5,7 +5,7 @@ import {
   TaobaoCircleOutlined,
   UserOutlined,
   WeiboCircleOutlined,
-  GitlabFilled
+  GitlabFilled,
 } from "@ant-design/icons";
 import {
   LoginForm,
@@ -27,18 +27,19 @@ const iconStyles: CSSProperties = {
   cursor: "pointer",
 };
 
-function gotoGitlab(){
-        const gitlab = 'http://192.168.10.61'
-        const client_id="852b871976b371c2d40e0408924c800e1e2888effe08255ba50e9190c4538cc6";
-        //注册应用时设置的重定向 URI
-        const redirect_uri= "http://localhost:8000";
-        //返回的类型，授权码模式即为code
-        const response_type ="code";
-        //用于确认请求和回调的状态，OAuth 建议以此来防止 CSRF 攻击
-        const state = "linda";
-        //权限设置，范围不得超出创建应用时的配置，以空格分隔
-        const scope = "api";
-        window.location.href =`${gitlab}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}&&scope=${scope}`
+function gotoGitlab() {
+  const gitlab = "http://192.168.10.61";
+  const client_id =
+    "852b871976b371c2d40e0408924c800e1e2888effe08255ba50e9190c4538cc6";
+  //注册应用时设置的重定向 URI
+  const redirect_uri = "http://localhost:8000";
+  //返回的类型，授权码模式即为code
+  const response_type = "code";
+  //用于确认请求和回调的状态，OAuth 建议以此来防止 CSRF 攻击
+  const state = "linda";
+  //权限设置，范围不得超出创建应用时的配置，以空格分隔
+  const scope = "api";
+  window.location.href = `${gitlab}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}&&scope=${scope}`;
 }
 
 const Login: React.FC<unknown> = () => {
@@ -53,7 +54,7 @@ const Login: React.FC<unknown> = () => {
           actions={
             <Space>
               其他登录方式
-              <GitlabFilled style={iconStyles} onClick={gotoGitlab}/>
+              <GitlabFilled style={iconStyles} onClick={gotoGitlab} />
             </Space>
           }
         >

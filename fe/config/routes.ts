@@ -29,7 +29,7 @@ export default [
       },
       {
         path: '*', // 通配符路径，匹配所有未定义的路径
-        element: '404', 
+        element: '404',
       },
     ],
   },

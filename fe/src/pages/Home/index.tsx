@@ -1,8 +1,8 @@
 import { PageContainer } from "@ant-design/pro-components";
-import { Alert, Card, Typography,Button } from "antd";
+import { Alert, Card, Typography, Button } from "antd";
 import type { ReactNode } from "react";
 import styles from "./index.less";
-import {useRequest } from '@umijs/max'
+import { useRequest } from "@umijs/max";
 const CodePreview: React.FC<{ children?: ReactNode }> = ({ children }) => (
   <pre className={styles.pre}>
     <code>
@@ -11,18 +11,25 @@ const CodePreview: React.FC<{ children?: ReactNode }> = ({ children }) => (
   </pre>
 );
 
-const Test = ()=>{
-  // const { data, error, loading } = useRequest(() => {
-  //   return fetch('/api/rest-crud/gitlab').then(res => res.json())
-  // });
-  fetch('/api/rest-crud/gitlab').then(res => res.json())
-}
-
 const HomePage: React.FC = () => {
   // const { name } = useModel('global');
+  const { loading, run } = useRequest(
+    (id: string) => {
+      console.log(id);
+      return fetch("/api/rest-crud/gitlab").then((res) => res.json());
+    },
+    {
+      manual: true,
+    }
+  );
+
+  const Test = async () => {
+    const data = await run("hello");
+    console.log(data, loading);
+  };
   return (
     <PageContainer>
-        <Button onClick={Test}>test</Button>
+      <Button onClick={Test}>test</Button>
 
       <Card>
         <Alert

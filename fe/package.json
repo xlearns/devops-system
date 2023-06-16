@@ -3,7 +3,7 @@
   "author": "xlearns <2447684095@qq.com>",
   "scripts": {
     "build": "max build",
-    "dev": "npm run start:dev",
+    "dev": "npm run start:pre",
     "format": "prettier --cache --write .",
     "postinstall": "max setup",
     "prepare": "husky install",
