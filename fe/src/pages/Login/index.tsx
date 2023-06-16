@@ -5,6 +5,7 @@ import {
   TaobaoCircleOutlined,
   UserOutlined,
   WeiboCircleOutlined,
+  GitlabFilled
 } from "@ant-design/icons";
 import {
   LoginForm,
@@ -15,7 +16,7 @@ import {
 } from "@ant-design/pro-components";
 import { Space, Tabs, message } from "antd";
 import type { CSSProperties } from "react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type LoginType = "phone" | "account";
 const iconStyles: CSSProperties = {
@@ -26,21 +27,33 @@ const iconStyles: CSSProperties = {
   cursor: "pointer",
 };
 
+function gotoGitlab(){
+        const gitlab = 'http://192.168.10.61'
+        const client_id="852b871976b371c2d40e0408924c800e1e2888effe08255ba50e9190c4538cc6";
+        //注册应用时设置的重定向 URI
+        const redirect_uri= "http://localhost:8000";
+        //返回的类型，授权码模式即为code
+        const response_type ="code";
+        //用于确认请求和回调的状态，OAuth 建议以此来防止 CSRF 攻击
+        const state = "linda";
+        //权限设置，范围不得超出创建应用时的配置，以空格分隔
+        const scope = "api";
+        window.location.href =`${gitlab}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}&&scope=${scope}`
+}
+
 const Login: React.FC<unknown> = () => {
-  const [loginType, setLoginType] = useState<LoginType>("phone");
+  const [loginType, setLoginType] = useState<LoginType>("account");
   return (
     <ProConfigProvider hashed={false}>
       <div style={{ backgroundColor: "white" }}>
         <LoginForm
-          logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
-          title="Github"
-          subTitle="全球最大的代码托管平台"
+          logo=""
+          title=""
+          subTitle=""
           actions={
             <Space>
               其他登录方式
-              <AlipayCircleOutlined style={iconStyles} />
-              <TaobaoCircleOutlined style={iconStyles} />
-              <WeiboCircleOutlined style={iconStyles} />
+              <GitlabFilled style={iconStyles} onClick={gotoGitlab}/>
             </Space>
           }
         >
@@ -50,7 +63,7 @@ const Login: React.FC<unknown> = () => {
             onChange={(activeKey) => setLoginType(activeKey as LoginType)}
           >
             <Tabs.TabPane key={"account"} tab={"账号密码登录"} />
-            <Tabs.TabPane key={"phone"} tab={"手机号登录"} />
+            {/* <Tabs.TabPane key={"phone"} tab={"手机号登录"} /> */}
           </Tabs>
           {loginType === "account" && (
             <>

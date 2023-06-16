@@ -8,10 +8,16 @@ export default {
   },
   test: {
     '/api': {
+      target: 'http://localhost:7001/api',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
+  pre: {
+    '/api': {
       target: 'http://localhost:7001/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },
   },
-  pre: {},
 };

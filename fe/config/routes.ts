@@ -22,80 +22,14 @@ export default [
         component: './Access',
       },
       {
-        name: '任务',
-        path: '/task',
-        icon: 'CodeOutlined',
-        component: './Access',
-      },
-      {
         name: '项目管理',
         path: '/project',
         icon: 'TableOutlined',
         component: './Project',
       },
       {
-        name: '定时任务',
-        icon: 'CodeOutlined',
-        path: 'timing',
-        routes: [
-          {
-            name: '定时列表',
-            path: 'list',
-            component: './Table',
-          },
-          {
-            name: '任务日志',
-            path: 'log',
-            component: './Table',
-          },
-        ],
-      },
-      {
-        name: '消息管理',
-        path: '/new',
-        icon: 'TableOutlined',
-        component: './Table',
-      },
-      {
-        name: '集成',
-        path: '/ci',
-        icon: 'TableOutlined',
-        component: './Table',
-      },
-      {
-        name: '部署',
-        path: '/cd',
-        icon: 'TableOutlined',
-        component: './Table',
-      },
-      {
-        name: '测试',
-        path: '/test',
-        icon: 'TableOutlined',
-        component: './Table',
-      },
-      {
-        name: '监控报警',
-        path: '/monitor',
-        icon: 'TableOutlined',
-        component: './Table',
-      },
-      {
-        name: '系统管理',
-        path: '/system',
-        icon: 'TableOutlined',
-        routes: [
-          {
-            name: '系统配置',
-            path: 'config',
-            component: './Table',
-          },
-          {
-            name: '系统日志',
-            path: 'log',
-            component: './Table',
-          },
-        ],
+        path: '*', // 通配符路径，匹配所有未定义的路径
+        element: '404', 
       },
     ],
   },
