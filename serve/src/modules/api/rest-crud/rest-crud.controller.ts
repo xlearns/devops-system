@@ -40,7 +40,6 @@ export class RestCrudController {
     const { query } = req;
     if(!this.gitlab.getToken()) return 'token undefined'
     const data = await this.gitlab.getRepositories()
-    console.log(2,data)
     return this.restCrudService.findAll(JSON.stringify(data));
   }
 

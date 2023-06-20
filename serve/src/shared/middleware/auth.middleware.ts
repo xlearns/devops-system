@@ -11,7 +11,6 @@ export class AuthMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['token'];
     req['context'] = req['context'] || {};
-    if (!token) return next();
     this.gitlab.auth(token);
     try {
       req['context']['token'] = token;

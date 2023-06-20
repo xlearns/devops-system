@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,Request } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
+//gitlab service
+import { GitlabService } from '@/modules/gitlab/gitlab.service';
+
 @Controller('project')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(private readonly projectService: ProjectService,private readonly gitlab:GitlabService) {}
 
   @Post()
   create(@Body() createProjectDto: CreateProjectDto) {
@@ -13,8 +16,13 @@ export class ProjectController {
   }
 
   @Get()
-  findAll() {
-    return this.projectService.findAll();
+  async getGitLab(@Request() req) {
+    const { query } = req;
+    if(!this.gitlab.getToken()) return 'token undefined'
+    const data = await this.gitlab.getRepositories()
+    return {
+      msg:'ok'
+    }
   }
 
   @Get(':id')
