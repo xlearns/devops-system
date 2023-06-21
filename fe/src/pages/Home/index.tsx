@@ -3,6 +3,9 @@ import { Alert, Card, Typography, Button } from "antd";
 import type { ReactNode } from "react";
 import styles from "./index.less";
 import { useRequest } from "@umijs/max";
+
+
+
 const CodePreview: React.FC<{ children?: ReactNode }> = ({ children }) => (
   <pre className={styles.pre}>
     <code>
@@ -16,11 +19,16 @@ const HomePage: React.FC = () => {
   const { loading, run } = useRequest(
     (id: string) => {
       console.log(id);
-      return fetch("/api/rest-crud/gitlab").then((res) => res.json());
+      return fetch("/api/rest-crud/gitlab",{
+        headers: {
+          // 'token': "" + sessionStorage.getItem('@gitlab-token'),
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => res.json());
     },
     {
       manual: true,
-    }
+    } 
   );
 
   const Test = async () => {
