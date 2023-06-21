@@ -15,10 +15,9 @@ export class ResponseFormatInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
-      // 将原有的 `data` 转化为统一的格式后返回
-      map((data) => ({
-        code: HttpStatus.OK,
-        message: 'ok',
+      map(({ code, message, data }) => ({
+        code: code || HttpStatus.OK,
+        message: message || 'request successful.',
         data,
       })),
     );

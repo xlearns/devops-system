@@ -47,7 +47,7 @@ export type GithubPullRequest = {
 };
 
 export type Repo = {
-  id?: string;
+  id?: string | number;
   name?: string;
   organization?: string;
   commits?: GithubCommit[];
@@ -91,9 +91,13 @@ export class GitlabService {
   }
 
   async getRepositories(): Promise<Repo[]> {
-    const projects = await this.#api.Projects.all();
+    const projects = await this.#api.Projects.all({
+      maxPages: 50000,
+      perPage: 100,
+    });
     const repositories: Repo[] = projects.map((project) => {
       return {
+        id: project.id,
         name: project.name,
         description: project.description,
         url: project.web_url,
@@ -106,6 +110,7 @@ export class GitlabService {
     const projects = await this.#api.Groups.projects(org);
     const repositories: Repo[] = projects.map((project) => {
       return {
+        id: project.id,
         name: project.name,
         description: project.description,
         url: project.web_url,
