@@ -37,7 +37,7 @@
     "typeorm": "^0.3.16"
   },
   "devDependencies": {
-    "@gitbeaker/node": "^35.8.1",
+    "@gitbeaker/node": "^35.7.0",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",

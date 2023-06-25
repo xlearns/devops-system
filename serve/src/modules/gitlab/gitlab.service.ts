@@ -92,7 +92,7 @@ export class GitlabService {
 
   async getRepositories(): Promise<Repo[]> {
     const projects = await this.#api.Projects.all({
-      maxPages: 50000,
+      min_access_level: '10',
       perPage: 100,
     });
     const repositories: Repo[] = projects.map((project) => {

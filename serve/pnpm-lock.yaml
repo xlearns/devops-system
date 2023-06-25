@@ -46,8 +46,8 @@ dependencies:
 
 devDependencies:
   '@gitbeaker/node':
-    specifier: ^35.8.1
-    version: 35.8.1
+    specifier: ^35.7.0
+    version: 35.7.0
   '@nestjs/axios':
     specifier: ^2.0.0
     version: 2.0.0(@nestjs/common@9.4.2)(axios@1.4.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -574,8 +574,8 @@ packages:
       xcase: 2.0.1
     dev: true
 
-  /@gitbeaker/node@35.8.1:
-    resolution: {integrity: sha512-g6rX853y61qNhzq9cWtxIEoe2KDeFBtXAeWMGWJnc3nz3WRump2pIICvJqw/yobLZqmTNt+ea6w3/n92Mnbn3g==}
+  /@gitbeaker/node@35.7.0:
+    resolution: {integrity: sha512-zh215EUloAxj2gwTHevBVypEiiwQR0WsFLGPWJwY+yUFJVQRcya+3mcsDbxgCLAk00wwhrTVYyNppvmoYbEZNg==}
     engines: {node: '>=14.2.0'}
     deprecated: Please use its successor @gitbeaker/rest
     dependencies:
