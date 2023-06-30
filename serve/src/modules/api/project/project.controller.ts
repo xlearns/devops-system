@@ -35,7 +35,7 @@ export class ProjectController {
         data: 'token undefined',
         message: 'error',
       };
-    const data = await this.gitlab.getProfile();
+    const data = await this.gitlab.getRepositories();
     return {
       data,
     };

@@ -13,10 +13,8 @@ const CodePreview: React.FC<{ children?: ReactNode }> = ({ children }) => (
 );
 
 const HomePage: React.FC = () => {
-  // const { name } = useModel('global');
   const { loading, run } = useRequest(
     (id: string) => {
-      console.log(id);
       return fetch("/api/project", {
         headers: {
           token: "" + sessionStorage.getItem("@gitlab-token"),
@@ -31,7 +29,7 @@ const HomePage: React.FC = () => {
 
   const Test = async () => {
     const data = await run("hello");
-    console.log(data, loading);
+    console.log(data);
   };
   return (
     <PageContainer>

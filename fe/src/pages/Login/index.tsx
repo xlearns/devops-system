@@ -31,13 +31,9 @@ function gotoGitlab() {
   const gitlab = "http://192.168.10.61";
   const client_id =
     "4320e6b76caa6f63f5cd250d2e07a9dca6fd3ce1ea2ae93ca6ffc63cc18544f4";
-  //注册应用时设置的重定向 URI
   const redirect_uri = "http://localhost:8000";
-  //返回的类型，授权码模式即为code
-  const response_type = "code";
-  //用于确认请求和回调的状态，OAuth 建议以此来防止 CSRF 攻击
+  const response_type = "token";
   const state = "linda";
-  //权限设置，范围不得超出创建应用时的配置，以空格分隔
   const scope = "api read_user read_registry openid";
   window.location.href = `${gitlab}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}&&scope=${scope}`;
 }
