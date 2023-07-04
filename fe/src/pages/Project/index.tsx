@@ -1,10 +1,23 @@
 import NoData from "@/components/NoData";
+import { formatTime } from "@/utils/format";
 import { MoreOutlined } from "@ant-design/icons";
-import { CheckCard, PageContainer } from "@ant-design/pro-components";
-import { useModel } from "@umijs/max";
+import {
+  CheckCard,
+  ModalForm,
+  PageContainer,
+  ProForm,
+  ProFormCheckbox,
+  ProFormDatePicker,
+  ProFormDateTimePicker,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea,
+  StepsForm,
+} from "@ant-design/pro-components";
+import { useModel, useRequest } from "@umijs/max";
 import type { MenuProps } from "antd";
-import { Button, Col, Dropdown, Row, Table } from "antd";
-import React, { useMemo, useState } from "react";
+import { Button, Col, Dropdown, Modal, Row, Table } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
 
 const items: MenuProps["items"] = [
   {
@@ -54,8 +67,34 @@ function useListType() {
 }
 
 const Project: React.FC<unknown> = () => {
+  const [visible, setVisible] = useState(false);
   const { project, setProject } = useModel("global");
   const { type, changeListType } = useListType();
+
+  const { run: getGitlabProjectAll } = useRequest(
+    () => {
+      return fetch("/api/project", {
+        headers: {
+          token: "" + sessionStorage.getItem("@gitlab-token"),
+          "Content-Type": "application/json",
+        },
+      }).then((res) => res.json());
+    },
+    {
+      manual: true,
+    }
+  );
+
+  function createProject() {
+    // setProject((attr) => {
+    //   return [...attr, {}];
+    // });
+  }
+
+  async function init() {
+    const res = await getGitlabProjectAll();
+    setProject(res);
+  }
 
   const list = useMemo(() => {
     if (!isHasData(project)) return <NoData className="h-[400px] w-full" />;
@@ -64,8 +103,8 @@ const Project: React.FC<unknown> = () => {
         return (
           <Col span={8} key={index}>
             <CheckCard
-              title="项目名称"
-              description={`Last update ${index} minutes ago`}
+              title={"" + _.name}
+              description={`Last update ${formatTime(_.update)}`}
               value={index}
               style={{ width: "100%", height: 100, paddingBlock: 10 }}
             />
@@ -78,8 +117,8 @@ const Project: React.FC<unknown> = () => {
         dataSource={
           project.map((_, index) => {
             return {
-              name: index,
-              update: `Last update ${index} minutes ago`,
+              name: _.name,
+              update: `Last update ${formatTime(_.update)}`,
               key: index,
             };
           }) as any[]
@@ -89,11 +128,10 @@ const Project: React.FC<unknown> = () => {
     );
   }, [project, type]);
 
-  function createProject() {
-    setProject((attr) => {
-      return [...attr, {}];
-    });
-  }
+  // useEffect(() => {
+  //   init();
+  // }, []);
+
   return (
     <PageContainer
       className="ant-page-project-container"
@@ -114,9 +152,130 @@ const Project: React.FC<unknown> = () => {
             >
               <Button type="primary" icon={<MoreOutlined />} />
             </Dropdown>
-            <Button type="primary" onClick={createProject}>
+
+            <Button type="primary" onClick={() => setVisible(true)}>
               New project
             </Button>
+            <StepsForm
+              onFinish={async (values) => {
+                setVisible(false);
+              }}
+              formProps={{
+                validateMessages: {
+                  required: "此项为必填项",
+                },
+              }}
+              stepsFormRender={(dom, submitter) => {
+                return (
+                  <Modal
+                    title="分步表单"
+                    width={800}
+                    onCancel={() => setVisible(false)}
+                    open={visible}
+                    footer={submitter}
+                    destroyOnClose
+                  >
+                    {dom}
+                  </Modal>
+                );
+              }}
+            >
+              <StepsForm.StepForm
+                name="base"
+                title="创建实验"
+                onFinish={async () => {
+                  return true;
+                }}
+              >
+                <ProFormText
+                  name="name"
+                  width="md"
+                  label="实验名称"
+                  tooltip="最长为 24 位，用于标定的唯一 id"
+                  placeholder="请输入名称"
+                  rules={[{ required: true }]}
+                />
+                <ProFormDatePicker name="date" label="日期" />
+                <ProForm.Group title="时间选择">
+                  <ProFormDateTimePicker name="dateTime" label="开始时间" />
+                  <ProFormDatePicker name="date" label="结束时间" />
+                </ProForm.Group>
+                <ProFormTextArea
+                  name="remark"
+                  label="备注"
+                  width="lg"
+                  placeholder="请输入备注"
+                />
+              </StepsForm.StepForm>
+              <StepsForm.StepForm name="checkbox" title="设置参数">
+                <ProFormCheckbox.Group
+                  name="checkbox"
+                  label="迁移类型"
+                  width="lg"
+                  options={["结构迁移", "全量迁移", "增量迁移", "全量校验"]}
+                />
+                <ProForm.Group>
+                  <ProFormText
+                    width="md"
+                    name="dbname"
+                    label="业务 DB 用户名"
+                  />
+                  <ProFormDatePicker
+                    name="datetime"
+                    label="记录保存时间"
+                    width="sm"
+                  />
+                  <ProFormCheckbox.Group
+                    name="checkbox"
+                    label="迁移类型"
+                    options={["完整 LOB", "不同步 LOB", "受限制 LOB"]}
+                  />
+                </ProForm.Group>
+              </StepsForm.StepForm>
+              <StepsForm.StepForm name="time" title="发布实验">
+                <ProFormCheckbox.Group
+                  name="checkbox"
+                  label="部署单元"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                  options={["部署单元1", "部署单元2", "部署单元3"]}
+                />
+                <ProFormSelect
+                  label="部署分组策略"
+                  name="remark"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                  width="md"
+                  initialValue="1"
+                  options={[
+                    {
+                      value: "1",
+                      label: "策略一",
+                    },
+                    { value: "2", label: "策略二" },
+                  ]}
+                />
+                <ProFormSelect
+                  label="Pod 调度策略"
+                  name="remark2"
+                  width="md"
+                  initialValue="2"
+                  options={[
+                    {
+                      value: "1",
+                      label: "策略一",
+                    },
+                    { value: "2", label: "策略二" },
+                  ]}
+                />
+              </StepsForm.StepForm>
+            </StepsForm>
           </div>
         ),
       }}

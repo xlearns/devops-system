@@ -54,6 +54,7 @@ export type Repo = {
   issues?: GithubIssue[];
   pullRequests?: GithubPullRequest[];
   users?: GithubUser[];
+  update?: string;
 };
 
 const defaultAPI = new Gitlab(null);
@@ -101,9 +102,18 @@ export class GitlabService {
         name: project.name,
         description: project.description,
         url: project.web_url,
+        update: project.last_activity_at,
+        // namespace:project.namespace
       };
     });
-    return repositories;
+
+    function compareByUpdate(a, b) {
+      const dateA = new Date(a.update).getTime();
+      const dateB = new Date(b.update).getTime();
+      return dateB - dateA;
+    }
+
+    return repositories.sort(compareByUpdate);
   }
 
   async getOrgRepositories(org: string): Promise<Repo[]> {

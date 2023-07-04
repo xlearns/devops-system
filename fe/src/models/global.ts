@@ -2,9 +2,19 @@
 import { DEFAULT_NAME, Project_Info } from '@/constants';
 import { useState } from 'react';
 
+type TNString = string | number;
+
+interface IProject {
+  id?: TNString;
+  name?: Extract<TNString, string>;
+  description?: Extract<TNString, string>;
+  url?: Extract<TNString, string>;
+  update?: Extract<TNString, string>;
+}
+
 const useUser = () => {
   const [name, setName] = useState<string>(DEFAULT_NAME);
-  const [project, setProject] = useState<unknown[]>(Project_Info);
+  const [project, setProject] = useState<IProject[]>(Project_Info);
   return {
     name,
     setName,
