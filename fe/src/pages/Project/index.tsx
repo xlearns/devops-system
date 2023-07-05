@@ -67,8 +67,9 @@ function useListType() {
 }
 
 const Project: React.FC<unknown> = () => {
-  const [visible, setVisible] = useState(false);
   const { project, setProject } = useModel("global");
+  const [gitLabList, setGitLabList] = useState<typeof project>([]);
+  const [visible, setVisible] = useState(false);
   const { type, changeListType } = useListType();
 
   const { run: getGitlabProjectAll } = useRequest(
@@ -93,7 +94,7 @@ const Project: React.FC<unknown> = () => {
 
   async function init() {
     const res = await getGitlabProjectAll();
-    setProject(res);
+    setGitLabList(res);
   }
 
   const list = useMemo(() => {
@@ -128,9 +129,9 @@ const Project: React.FC<unknown> = () => {
     );
   }, [project, type]);
 
-  // useEffect(() => {
-  //   init();
-  // }, []);
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <PageContainer
@@ -168,7 +169,7 @@ const Project: React.FC<unknown> = () => {
               stepsFormRender={(dom, submitter) => {
                 return (
                   <Modal
-                    title="分步表单"
+                    title="制品仓库"
                     width={800}
                     onCancel={() => setVisible(false)}
                     open={visible}
@@ -182,17 +183,44 @@ const Project: React.FC<unknown> = () => {
             >
               <StepsForm.StepForm
                 name="base"
-                title="创建实验"
+                title="制品仓库"
                 onFinish={async () => {
                   return true;
                 }}
               >
                 <ProFormText
-                  name="name"
+                  name="host"
                   width="md"
-                  label="实验名称"
-                  tooltip="最长为 24 位，用于标定的唯一 id"
-                  placeholder="请输入名称"
+                  label="主机"
+                  placeholder="[用户@]主机地址"
+                  rules={[{ required: true }]}
+                />
+                <ProFormText
+                  name="port"
+                  width="md"
+                  label="端口"
+                  rules={[{ required: true }]}
+                />
+                <ProFormSelect
+                  name="select"
+                  label="选择gitlab仓库"
+                  options={gitLabList.map(({ name, url }, index) => {
+                    return {
+                      label: name,
+                      value: url,
+                    };
+                  })}
+                  fieldProps={{
+                    optionItemRender(item: { label: string; value: string }) {
+                      return (
+                        <div title={item.value}>
+                          <span style={{ color: "red" }}>{item.label}</span> -{" "}
+                          {item.value}
+                        </div>
+                      );
+                    },
+                  }}
+                  placeholder="Please select"
                   rules={[{ required: true }]}
                 />
                 <ProFormDatePicker name="date" label="日期" />
