@@ -118,8 +118,13 @@ export default () => {
         maxLength={5}
         columns={columns}
         request={async () => {
+          const { data, code } = await fetch("/api/serve", {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((res) => res.json());
           return {
-            data: [],
+            data,
             total: 3,
             success: true,
           };

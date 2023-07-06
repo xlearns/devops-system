@@ -3,6 +3,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Serve } from '@/entities/Serve';
+import { interceptOfKey } from '@/shared/utils/command';
 
 @Injectable()
 export class ServeService {
@@ -10,13 +11,18 @@ export class ServeService {
     @InjectRepository(Serve) private readonly ServeRepo: Repository<Serve>,
   ) {}
 
-  create(rep: Serve) {
+  async create(rep: Serve) {
     delete rep.id;
-    return this.ServeRepo.save(rep);
+    const intercept = interceptOfKey(rep, ['user', 'password', 'port', 'host']);
+    if (intercept) return intercept;
+    await this.ServeRepo.save(rep);
+    return {
+      data: 'Created successfully',
+    };
   }
 
-  findAll() {
-    const data = this.ServeRepo.find();
+  async findAll() {
+    const data = await this.ServeRepo.find();
     return {
       data,
     };
