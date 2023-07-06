@@ -7,7 +7,7 @@ import { GitlabModule } from '@/modules/gitlab/gitlab.module';
 import { JenkinsModule } from '@/modules/jenkins/jenkins.module';
 
 @Module({
-  imports:[GitlabModule,JenkinsModule],
+  imports: [GitlabModule, JenkinsModule],
   controllers: [RestCrudController],
   providers: [RestCrudService],
 })

@@ -8,7 +8,7 @@ export class RestCrudService {
     return 'This action adds a new restCrud';
   }
 
-  findAll(str:string) {
+  findAll(str: string) {
     return str;
   }
 

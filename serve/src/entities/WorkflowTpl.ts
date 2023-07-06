@@ -7,7 +7,7 @@ export class WorkflowTpl {
 
   @Column('varchar')
   name: string;
-  
+
   @Column('varchar')
-  workflowIds:string
+  workflowIds: string;
 }

@@ -22,7 +22,11 @@ import { JenkinsService } from '@/modules/jenkins/jenkins.service';
 
 @Controller('rest-crud')
 export class RestCrudController {
-  constructor(private readonly restCrudService: RestCrudService,private readonly gitlab:GitlabService,private readonly Jenkins:JenkinsService) {}
+  constructor(
+    private readonly restCrudService: RestCrudService,
+    private readonly gitlab: GitlabService,
+    private readonly Jenkins: JenkinsService,
+  ) {}
 
   @Post()
   create(@Body() createRestCrudDto: CreateRestCrudDto, @Headers() header) {
@@ -32,14 +36,14 @@ export class RestCrudController {
 
   @Get()
   async findAll(@Request() req) {
-    return 'ok'
+    return 'ok';
   }
 
   @Get('/gitlab')
   async getGitLab(@Request() req) {
     const { query } = req;
-    if(!this.gitlab.getToken()) return 'token undefined'
-    const data = await this.gitlab.getRepositories()
+    if (!this.gitlab.getToken()) return 'token undefined';
+    const data = await this.gitlab.getRepositories();
     return this.restCrudService.findAll(JSON.stringify(data));
   }
 
@@ -57,19 +61,18 @@ export class RestCrudController {
             }
         }
     }
-    `
-    const data = await this.Jenkins.buildJenkins({job:"hello",config})
+    `;
+    const data = await this.Jenkins.buildJenkins({ job: 'hello', config });
     return this.restCrudService.findAll(JSON.stringify(data));
   }
 
   @Get('/jenkinsGet')
   async getJenkinsPro(@Request() req) {
-    const {query} = req
-    const {name} = query
+    const { query } = req;
+    const { name } = query;
     const data = await this.Jenkins.getJenkinsConsole(name);
-    return  {...data}
+    return { ...data };
   }
-
 
   @Get(':id')
   findOne(@Param('id') id: string, @Query() query) {

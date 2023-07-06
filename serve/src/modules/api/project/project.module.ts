@@ -5,9 +5,8 @@ import { ProjectController } from './project.controller';
 import { GitlabModule } from '@/modules/gitlab/gitlab.module';
 
 @Module({
-  imports:[GitlabModule],
+  imports: [GitlabModule],
   controllers: [ProjectController],
   providers: [ProjectService],
-  
 })
 export class ProjectModule {}

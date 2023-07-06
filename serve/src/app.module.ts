@@ -16,6 +16,7 @@ import { BuildModule } from './modules/api/build/build.module';
 import { NoticesModule } from './modules/api/notices/notices.module';
 import { ProcessModule } from './modules/api/process/process.module';
 import { ProjectModule } from './modules/api/project/project.module';
+import { ServeModule } from './modules/api/serve/serve.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ProjectModule } from './modules/api/project/project.module';
           database: config.get('MYSQL_DB'),
           entities: ['dist/src/entities/*.ts'],
           synchronize: config.get('MYSQL_ISSync'),
+          autoLoadEntities: true,
         };
       },
       inject: [ConfigService],
@@ -48,6 +50,7 @@ import { ProjectModule } from './modules/api/project/project.module';
     NoticesModule,
     ProcessModule,
     ProjectModule,
+    ServeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,6 +4,6 @@ import { ProcessController } from './process.controller';
 
 @Module({
   controllers: [ProcessController],
-  providers: [ProcessService]
+  providers: [ProcessService],
 })
 export class ProcessModule {}

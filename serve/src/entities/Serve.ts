@@ -1,22 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class User {
+export class Serve {
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column('varchar')
-  name: string;
+  user: string;
 
   @Column('varchar')
   password: string;
 
   @Column('varchar')
-  email: string;
+  host: string;
 
   @Column('varchar')
-  avatarUrl: string;
-
-  @Column('varchar')
-  webUrl: string;
+  port: string;
 }

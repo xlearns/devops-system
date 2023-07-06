@@ -1,4 +1,4 @@
-export const PipelineConfigXml = (sanitizedJenkinsfile:string)=>{
+export const PipelineConfigXml = (sanitizedJenkinsfile: string) => {
   return `<flow-definition plugin="workflow-job@1292.v27d8cc3e2602">
   <script type="module" src="chrome-extension://iladajdkobpmadjfpeginhngnneaoefi/document.js"/>
   <actions>
@@ -55,6 +55,5 @@ export const PipelineConfigXml = (sanitizedJenkinsfile:string)=>{
   </definition>
   <triggers/>
   <disabled>false</disabled>
-  </flow-definition>`
-}
-
+  </flow-definition>`;
+};
