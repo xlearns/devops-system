@@ -22,6 +22,12 @@ export default [
         component: './Access',
       },
       {
+        name: '服务器管理',
+        path: '/serve',
+        icon: 'TableOutlined',
+        component: './Serve',
+      },
+      {
         name: '项目管理',
         path: '/project',
         icon: 'TableOutlined',

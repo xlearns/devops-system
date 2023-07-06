@@ -1,7 +1,7 @@
 # target
 
-- Gitlab
 - CICD
-- Jenkins
+- GitLab pipeline
+- Jenkins pipeline
 - Docker
 - Log

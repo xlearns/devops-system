@@ -188,19 +188,24 @@ const Project: React.FC<unknown> = () => {
                   return true;
                 }}
               >
-                <ProFormText
-                  name="host"
-                  width="md"
-                  label="主机"
-                  placeholder="[用户@]主机地址"
+                <ProFormSelect
+                  name="select"
+                  label="选择服务器"
+                  options={[]}
+                  fieldProps={{
+                    optionItemRender(item: { label: string; value: string }) {
+                      return (
+                        <div title={item.value}>
+                          <span style={{ color: "red" }}>{item.label}</span> -{" "}
+                          {item.value}
+                        </div>
+                      );
+                    },
+                  }}
+                  placeholder="Please select"
                   rules={[{ required: true }]}
                 />
-                <ProFormText
-                  name="port"
-                  width="md"
-                  label="端口"
-                  rules={[{ required: true }]}
-                />
+
                 <ProFormSelect
                   name="select"
                   label="选择gitlab仓库"
