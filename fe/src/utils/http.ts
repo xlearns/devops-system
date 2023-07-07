@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import qs from 'qs';
 const defaultConfig: AxiosRequestConfig = {
@@ -12,14 +13,17 @@ const defaultConfig: AxiosRequestConfig = {
 };
 
 class Http {
-  npOpen: any;
-  constructor() {
+  private static initConfig: any;
+  private static axiosInstance: AxiosInstance;
+
+  constructor(config?: Record<string, any>) {
+    const mergedConfig = Object.assign({}, defaultConfig, config);
+    Http.axiosInstance = Axios.create(mergedConfig);
+    Http.initConfig = mergedConfig;
     this.httpInterceptorsRequest();
     this.httpInterceptorsResponse();
+    this.handleTimeoutError();
   }
-  private static initConfig = {} as any;
-
-  private static axiosInstance: AxiosInstance = Axios.create(defaultConfig);
 
   private httpInterceptorsRequest() {
     const instance = Http.axiosInstance;
@@ -35,7 +39,6 @@ class Http {
           return _config;
         }
         return _config;
-        //  config.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
       },
       (error) => {
         return Promise.reject(error);
@@ -64,11 +67,30 @@ class Http {
       },
     );
   }
+
+  private handleTimeoutError() {
+    const instance = Http.axiosInstance;
+    instance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (Axios.isCancel(error)) {
+          return Promise.reject(error);
+        }
+
+        if (error.code === 'ECONNABORTED') {
+          message.error('请求超时，请稍后重试');
+        }
+
+        return Promise.reject(error);
+      },
+    );
+  }
+
   public request<T>(
     method: string,
-    url: any,
+    url: string,
     param?: any,
-    axiosConfig?: any,
+    axiosConfig?: Record<string, any>,
   ): Promise<T> {
     const config = {
       method,
@@ -89,17 +111,54 @@ class Http {
     });
   }
 
-  public post<T>(url: any, param?: any, config?: any): Promise<T> {
+  public post<T>(
+    url: string,
+    param?: any,
+    config?: Record<string, any>,
+  ): Promise<T> {
     return this.request<T>('post', url, param, config);
   }
 
-  public get<T>(url: any, param?: any, config?: any): Promise<T> {
+  public get<T>(
+    url: string,
+    param?: any,
+    config?: Record<string, any>,
+  ): Promise<T> {
     return this.request<T>('get', url, param, config);
   }
+
+  public put<T>(
+    url: string,
+    param?: any,
+    config?: Record<string, any>,
+  ): Promise<T> {
+    return this.request<T>('put', url, param, config);
+  }
+
+  public delete<T>(
+    url: string,
+    param?: any,
+    config?: Record<string, any>,
+  ): Promise<T> {
+    return this.request<T>('delete', url, param, config);
+  }
 }
-export const http = new Http();
 
 export interface IRequest {
   data: any;
-  code: string;
+  code: number;
+  message?: string;
 }
+
+export const http = new Http();
+
+export const apiHttp = new Http({
+  baseURL: 'api',
+  beforeResponseCallback(response: { data: IRequest }) {
+    const { data } = response;
+    const { code, message: msg } = data;
+    if (code !== 200) {
+      return message.error(msg || 'error');
+    }
+  },
+});

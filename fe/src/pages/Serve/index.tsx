@@ -5,10 +5,12 @@ import type {
   ProFormInstance,
 } from "@ant-design/pro-components";
 import { EditableProTable, ProCard } from "@ant-design/pro-components";
-import React, { useRef, useState } from "react";
-import { http } from "@/utils/http";
+import React, { useEffect, useRef, useState } from "react";
+import { apiHttp } from "@/utils/http";
 import type { IRequest } from "@/utils/http";
 import { IServeList } from "@/pages/interface";
+import { useDataSource } from "./hook";
+import { omit } from "@/utils/format";
 
 const waitTime = (time = 100) => {
   return new Promise((resolve) => {
@@ -20,9 +22,9 @@ const waitTime = (time = 100) => {
 
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() => []);
-  const [dataSource, setDataSource] = useState<readonly IServeList[]>();
-  const formRef = useRef<ProFormInstance<any>>();
   const actionRef = useRef<ActionType>();
+  const { changeEditState, dataSource, setDataSource } = useDataSource();
+
   const columns: ProColumns<IServeList>[] = [
     {
       title: "主机地址",
@@ -92,7 +94,10 @@ export default () => {
         <a
           key="edit"
           onClick={() => {
-            actionRef.current?.startEditable(row.id);
+            const { id } = row;
+            if (!id) return;
+            changeEditState(true, id);
+            actionRef.current?.startEditable(id);
           }}
         >
           编辑
@@ -100,7 +105,14 @@ export default () => {
       ],
     },
   ];
+  async function getTable() {
+    const { data } = await apiHttp.get<IRequest>("serve");
+    setDataSource(data);
+  }
 
+  useEffect(() => {
+    getTable();
+  }, []);
   return (
     <ProCard>
       <EditableProTable<IServeList>
@@ -112,17 +124,9 @@ export default () => {
         actionRef={actionRef}
         maxLength={5}
         columns={columns}
-        request={async () => {
-          const { data } = await http.get<IRequest>("/api/serve");
-          return {
-            data,
-            total: 3,
-            success: true,
-          };
-        }}
         recordCreatorProps={{
-          record: (index) => {
-            return { id: index + 1 };
+          record: () => {
+            return { id: new Date().getTime() };
           },
         }}
         value={dataSource}
@@ -137,12 +141,24 @@ export default () => {
             defaultDom.delete,
           ],
           onSave: async (alias, row) => {
-            await waitTime(20);
-            console.log(row);
+            const { id, isEdit } = row;
+            const data = omit(row, ["id", "isEdit", "index"]);
+            if (isEdit && id) {
+              await apiHttp.put(`serve/${id}`, {
+                data,
+              });
+              changeEditState(false, id);
+            } else {
+              await apiHttp.post("serve", {
+                data,
+              });
+            }
+            getTable();
           },
           onDelete: async (alias, row) => {
-            await waitTime(20);
-            console.log(row);
+            const { id } = row;
+            await apiHttp.delete(`serve/${id}`);
+            getTable();
           },
         }}
       />

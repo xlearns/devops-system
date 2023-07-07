@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ServeService } from './serve.service';
 import { Serve } from '@/entities/Serve';
@@ -30,7 +30,7 @@ export class ServeController {
     return this.serveService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateServeDto: Serve) {
     return this.serveService.update(+id, updateServeDto);
   }

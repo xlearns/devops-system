@@ -15,7 +15,7 @@ const CodePreview: React.FC<{ children?: ReactNode }> = ({ children }) => (
 const HomePage: React.FC = () => {
   const { loading, run } = useRequest(
     (id: string) => {
-      return fetch("/api/project", {
+      return fetch("project", {
         headers: {
           token: "" + sessionStorage.getItem("@gitlab-token"),
           "Content-Type": "application/json",

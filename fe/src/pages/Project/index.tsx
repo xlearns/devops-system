@@ -18,9 +18,11 @@ import { useModel, useRequest } from "@umijs/max";
 import type { MenuProps } from "antd";
 import { Button, Col, Dropdown, Modal, Row, Table } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
-import { http } from "@/utils/http";
+import { apiHttp } from "@/utils/http";
 import type { IRequest } from "@/utils/http";
 import type { IServeList } from "@/pages/interface";
+import CodeMirror from "@uiw/react-codemirror";
+import { StreamLanguage } from "@codemirror/language";
 
 const items: MenuProps["items"] = [
   {
@@ -52,6 +54,18 @@ const columns = [
   },
 ];
 
+const code = `pipeline {
+  agent any
+  stages {
+      stage('Hello') {
+          steps {
+              echo 'Hello World'
+          }
+      }
+  }
+}
+`;
+
 function isHasData(data: unknown[]) {
   if (!Array.isArray(data)) return;
   return data.length > 0 ? true : false;
@@ -78,7 +92,7 @@ const Project: React.FC<unknown> = () => {
 
   const { run: getGitlabProjectAll } = useRequest(
     () => {
-      return http.get<IRequest>("/api/project", null, {
+      return apiHttp.get<IRequest>("project", null, {
         beforeRequestCallback(config: Record<string, any>) {
           config.headers["token"] =
             "" + sessionStorage.getItem("@gitlab-token");
@@ -100,7 +114,7 @@ const Project: React.FC<unknown> = () => {
   async function init() {
     const res = await getGitlabProjectAll();
     setGitLabList(res);
-    const { data } = await http.get<IRequest>("/api/serve");
+    const { data } = await apiHttp.get<IRequest>("serve");
     setServeList(data);
   }
 
@@ -190,7 +204,7 @@ const Project: React.FC<unknown> = () => {
             >
               <StepsForm.StepForm
                 name="base"
-                title="制品仓库"
+                title="选择仓库"
                 onFinish={async () => {
                   return true;
                 }}
@@ -230,42 +244,16 @@ const Project: React.FC<unknown> = () => {
                   placeholder="Please select"
                   rules={[{ required: true }]}
                 />
-                <ProFormDatePicker name="date" label="日期" />
-                <ProForm.Group title="时间选择">
-                  <ProFormDateTimePicker name="dateTime" label="开始时间" />
-                  <ProFormDatePicker name="date" label="结束时间" />
-                </ProForm.Group>
-                <ProFormTextArea
-                  name="remark"
-                  label="备注"
-                  width="lg"
-                  placeholder="请输入备注"
-                />
               </StepsForm.StepForm>
-              <StepsForm.StepForm name="checkbox" title="设置参数">
-                <ProFormCheckbox.Group
-                  name="checkbox"
-                  label="迁移类型"
-                  width="lg"
-                  options={["结构迁移", "全量迁移", "增量迁移", "全量校验"]}
+              <StepsForm.StepForm name="checkbox" title="设置流水线">
+                <CodeMirror
+                  value={code}
+                  height="200px"
+                  readOnly={false}
+                  onChange={(value, viewUpdate) => {
+                    console.log("value:", value);
+                  }}
                 />
-                <ProForm.Group>
-                  <ProFormText
-                    width="md"
-                    name="dbname"
-                    label="业务 DB 用户名"
-                  />
-                  <ProFormDatePicker
-                    name="datetime"
-                    label="记录保存时间"
-                    width="sm"
-                  />
-                  <ProFormCheckbox.Group
-                    name="checkbox"
-                    label="迁移类型"
-                    options={["完整 LOB", "不同步 LOB", "受限制 LOB"]}
-                  />
-                </ProForm.Group>
               </StepsForm.StepForm>
               <StepsForm.StepForm name="time" title="发布实验">
                 <ProFormCheckbox.Group

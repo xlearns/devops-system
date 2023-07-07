@@ -35,12 +35,18 @@ export class ServeService {
   async update(id: number, data: Serve) {
     await this.findOneById(id);
     delete data.id;
-    this.ServeRepo.update(id, data);
+    await this.ServeRepo.update(id, data);
+    return {
+      data: 'modified successfully',
+    };
   }
 
   async remove(id: number) {
     await this.findOneById(id);
-    this.ServeRepo.delete(id);
+    await this.ServeRepo.delete(id);
+    return {
+      data: 'delete successfully',
+    };
   }
 
   private async findOneById(id: number): Promise<Serve> {
