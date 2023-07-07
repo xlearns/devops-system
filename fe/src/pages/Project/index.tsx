@@ -18,6 +18,9 @@ import { useModel, useRequest } from "@umijs/max";
 import type { MenuProps } from "antd";
 import { Button, Col, Dropdown, Modal, Row, Table } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
+import { http } from "@/utils/http";
+import type { IRequest } from "@/utils/http";
+import type { IServeList } from "@/pages/interface";
 
 const items: MenuProps["items"] = [
   {
@@ -69,17 +72,19 @@ function useListType() {
 const Project: React.FC<unknown> = () => {
   const { project, setProject } = useModel("global");
   const [gitLabList, setGitLabList] = useState<typeof project>([]);
+  const [serveList, setServeList] = useState<IServeList[]>([]);
   const [visible, setVisible] = useState(false);
   const { type, changeListType } = useListType();
 
   const { run: getGitlabProjectAll } = useRequest(
     () => {
-      return fetch("/api/project", {
-        headers: {
-          token: "" + sessionStorage.getItem("@gitlab-token"),
-          "Content-Type": "application/json",
+      return http.get<IRequest>("/api/project", null, {
+        beforeRequestCallback(config: Record<string, any>) {
+          config.headers["token"] =
+            "" + sessionStorage.getItem("@gitlab-token");
+          return config;
         },
-      }).then((res) => res.json());
+      });
     },
     {
       manual: true,
@@ -95,6 +100,8 @@ const Project: React.FC<unknown> = () => {
   async function init() {
     const res = await getGitlabProjectAll();
     setGitLabList(res);
+    const { data } = await http.get<IRequest>("/api/serve");
+    setServeList(data);
   }
 
   const list = useMemo(() => {
@@ -189,27 +196,22 @@ const Project: React.FC<unknown> = () => {
                 }}
               >
                 <ProFormSelect
-                  name="select"
+                  name="host"
                   label="选择服务器"
-                  options={[]}
-                  fieldProps={{
-                    optionItemRender(item: { label: string; value: string }) {
-                      return (
-                        <div title={item.value}>
-                          <span style={{ color: "red" }}>{item.label}</span> -{" "}
-                          {item.value}
-                        </div>
-                      );
-                    },
-                  }}
+                  options={serveList.map(({ host }) => {
+                    return {
+                      label: host,
+                      value: host,
+                    };
+                  })}
                   placeholder="Please select"
                   rules={[{ required: true }]}
                 />
 
                 <ProFormSelect
-                  name="select"
+                  name="gitlab"
                   label="选择gitlab仓库"
-                  options={gitLabList.map(({ name, url }, index) => {
+                  options={gitLabList.map(({ name, url }) => {
                     return {
                       label: name,
                       value: url,

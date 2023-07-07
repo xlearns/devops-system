@@ -6,14 +6,9 @@ import type {
 } from "@ant-design/pro-components";
 import { EditableProTable, ProCard } from "@ant-design/pro-components";
 import React, { useRef, useState } from "react";
-
-type DataSourceType = {
-  id: React.Key;
-  user?: string;
-  password?: number;
-  host?: string;
-  port?: number;
-};
+import { http } from "@/utils/http";
+import type { IRequest } from "@/utils/http";
+import { IServeList } from "@/pages/interface";
 
 const waitTime = (time = 100) => {
   return new Promise((resolve) => {
@@ -25,10 +20,10 @@ const waitTime = (time = 100) => {
 
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() => []);
-  const [dataSource, setDataSource] = useState<readonly DataSourceType[]>();
+  const [dataSource, setDataSource] = useState<readonly IServeList[]>();
   const formRef = useRef<ProFormInstance<any>>();
   const actionRef = useRef<ActionType>();
-  const columns: ProColumns<DataSourceType>[] = [
+  const columns: ProColumns<IServeList>[] = [
     {
       title: "主机地址",
       dataIndex: "host",
@@ -108,7 +103,7 @@ export default () => {
 
   return (
     <ProCard>
-      <EditableProTable<DataSourceType>
+      <EditableProTable<IServeList>
         rowKey="id"
         scroll={{
           x: 960,
@@ -118,11 +113,7 @@ export default () => {
         maxLength={5}
         columns={columns}
         request={async () => {
-          const { data, code } = await fetch("/api/serve", {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }).then((res) => res.json());
+          const { data } = await http.get<IRequest>("/api/serve");
           return {
             data,
             total: 3,
