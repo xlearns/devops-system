@@ -113,18 +113,25 @@ class Http {
 
   public post<T>(
     url: string,
-    param?: any,
+    data?: any,
     config?: Record<string, any>,
   ): Promise<T> {
-    return this.request<T>('post', url, param, config);
+    return this.request<T>(
+      'post',
+      url,
+      {
+        data,
+      },
+      config,
+    );
   }
 
   public get<T>(
     url: string,
-    param?: any,
+    params?: any,
     config?: Record<string, any>,
   ): Promise<T> {
-    return this.request<T>('get', url, param, config);
+    return this.request<T>('get', url, { params }, config);
   }
 
   public put<T>(

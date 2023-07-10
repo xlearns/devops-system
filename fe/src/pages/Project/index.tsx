@@ -9,6 +9,7 @@ import {
   ProFormCheckbox,
   ProFormDatePicker,
   ProFormDateTimePicker,
+  ProFormInstance,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
@@ -17,7 +18,7 @@ import {
 import { useModel, useRequest } from "@umijs/max";
 import type { MenuProps } from "antd";
 import { Button, Col, Dropdown, Modal, Row, Table } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { apiHttp } from "@/utils/http";
 import type { IRequest } from "@/utils/http";
 import type { IServeList } from "@/pages/interface";
@@ -87,6 +88,7 @@ const Project: React.FC<unknown> = () => {
   const { project, setProject } = useModel("global");
   const [gitLabList, setGitLabList] = useState<typeof project>([]);
   const [serveList, setServeList] = useState<IServeList[]>([]);
+  const [branchList, setBranchList] = useState([]);
   const [visible, setVisible] = useState(false);
   const { type, changeListType } = useListType();
 
@@ -151,6 +153,10 @@ const Project: React.FC<unknown> = () => {
   }, [project, type]);
 
   useEffect(() => {
+    // getBranch
+  }, [serveList]);
+
+  useEffect(() => {
     init();
   }, []);
 
@@ -204,9 +210,25 @@ const Project: React.FC<unknown> = () => {
             >
               <StepsForm.StepForm
                 name="base"
-                title="选择仓库"
+                title="基本配置"
                 onFinish={async () => {
                   return true;
+                }}
+                onValuesChange={async (changedValues) => {
+                  if (changedValues.gitlab) {
+                    const gitlabValue = changedValues.gitlab;
+                    const { data } = await apiHttp.get<IRequest>(
+                      "project/branchs",
+                      {
+                        id: gitlabValue,
+                      }
+                    );
+                    if (data) {
+                      setBranchList(data);
+                    } else {
+                      setBranchList(() => []);
+                    }
+                  }
                 }}
               >
                 <ProFormSelect
@@ -219,28 +241,41 @@ const Project: React.FC<unknown> = () => {
                     };
                   })}
                   placeholder="Please select"
-                  rules={[{ required: true }]}
+                  rules={[{ required: false }]}
                 />
 
                 <ProFormSelect
                   name="gitlab"
                   label="选择gitlab仓库"
-                  options={gitLabList.map(({ name, url }) => {
+                  options={gitLabList.map(({ id, name, url }) => {
                     return {
                       label: name,
-                      value: url,
+                      value: id,
+                      url,
                     };
                   })}
                   fieldProps={{
-                    optionItemRender(item: { label: string; value: string }) {
+                    optionItemRender(item: { label: string; url: string }) {
                       return (
-                        <div title={item.value}>
+                        <div title={item.url}>
                           <span style={{ color: "red" }}>{item.label}</span> -{" "}
-                          {item.value}
+                          {item.url}
                         </div>
                       );
                     },
                   }}
+                  placeholder="Please select"
+                  rules={[{ required: true }]}
+                />
+                <ProFormSelect
+                  name="branch"
+                  label="选择分支"
+                  options={branchList.map(({ name, id }) => {
+                    return {
+                      label: name,
+                      value: id,
+                    };
+                  })}
                   placeholder="Please select"
                   rules={[{ required: true }]}
                 />

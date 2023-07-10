@@ -40,6 +40,14 @@ export class ProjectController {
       data,
     };
   }
+  @Get('branchs')
+  async getBranch(@Request() req) {
+    const { id } = req.query;
+    const data = await this.gitlab.getBranchs(id);
+    return {
+      data,
+    };
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

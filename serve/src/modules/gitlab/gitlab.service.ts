@@ -91,6 +91,12 @@ export class GitlabService {
     return { id, login };
   }
 
+  async getBranchs(projectId): Promise<Repo[]> {
+    //Bug: Public repositories can access branches, while private repositories cannot.
+    const branchs = await this.#api.Branches.all(projectId);
+    return branchs;
+  }
+
   async getRepositories(): Promise<Repo[]> {
     const projects = await this.#api.Projects.all({
       min_access_level: '10',
