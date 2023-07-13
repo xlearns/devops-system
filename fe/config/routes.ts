@@ -7,30 +7,36 @@ export default [
     routes: [
       {
         path: '/',
-        redirect: '/home',
+        redirect: '/serve',
       },
-      {
-        name: '概要',
-        path: '/home',
-        icon: 'HomeOutlined',
-        component: './Home',
-      },
-      {
-        name: 'CICD',
-        path: '/cicd',
-        icon: 'CodeOutlined',
-        component: './Access',
-      },
+      // {
+      //   name: '概要',
+      //   path: '/home',
+      //   icon: 'HomeOutlined',
+      //   component: './Home',
+      // },
+      // {
+      //   name: 'CICD',
+      //   path: '/cicd',
+      //   icon: 'CodeOutlined',
+      //   component: './Access',
+      // },
       {
         name: '服务器管理',
         path: '/serve',
-        icon: 'TableOutlined',
+        icon: 'HomeOutlined',
         component: './Serve',
+      },
+      {
+        name: '流水线管理',
+        path: '/pipeline',
+        icon: 'TableOutlined',
+        component: './Pipeline',
       },
       {
         name: '项目管理',
         path: '/project',
-        icon: 'TableOutlined',
+        icon: 'CodeOutlined',
         component: './Project',
       },
       {

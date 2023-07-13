@@ -2,7 +2,11 @@ import type { FormInstance } from "@ant-design/pro-components";
 import type { IFormBase } from "./interface";
 import type { RefObject } from "react";
 import type { IProject } from "@/models/global";
-import { ProFormSelect, StepsForm } from "@ant-design/pro-components";
+import {
+  ProFormSelect,
+  ProFormText,
+  StepsForm,
+} from "@ant-design/pro-components";
 import { resetFormOfKey } from "./utils";
 import { IRequest, apiHttp } from "@/utils/http";
 import { IServeList } from "../interface";
@@ -14,6 +18,17 @@ interface IPort {
   gitLabList: IProject[];
   branchList: IProject[];
 }
+
+const environments = [
+  {
+    label: "java",
+    value: "java",
+  },
+  {
+    label: "node",
+    value: "node",
+  },
+];
 
 const Base: React.FC<IPort> = (props) => {
   const { formRef, setBranchList, serveList, gitLabList, branchList } = props;
@@ -46,6 +61,18 @@ const Base: React.FC<IPort> = (props) => {
         }
       }}
     >
+      <ProFormText
+        name="name"
+        label="名称"
+        placeholder="Please select"
+        rules={[{ required: true }]}
+      />
+      <ProFormText
+        name="description"
+        label="描述"
+        placeholder="Please select"
+        rules={[{ required: true }]}
+      />
       <ProFormSelect
         name="host"
         label="选择服务器"
@@ -91,6 +118,14 @@ const Base: React.FC<IPort> = (props) => {
             value: id,
           };
         })}
+        placeholder="Please select"
+        rules={[{ required: true }]}
+      />
+
+      <ProFormSelect
+        name="env"
+        label="环境"
+        options={environments}
         placeholder="Please select"
         rules={[{ required: true }]}
       />
