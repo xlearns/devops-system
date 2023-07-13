@@ -226,7 +226,7 @@ const Project: React.FC<unknown> = () => {
                 }}
                 onValuesChange={async (changedValues) => {
                   if (changedValues.gitlab) {
-                    const gitlabValue = changedValues.gitlab;
+                    const { value: gitlabValue } = changedValues.gitlab;
                     resetFormOfBase([["branch", setBranchList, () => []]]);
                     const { data } = await apiHttp.get<IRequest>(
                       "project/branchs",
@@ -254,7 +254,8 @@ const Project: React.FC<unknown> = () => {
                   rules={[{ required: false }]}
                 />
 
-                <ProFormSelect
+                <ProFormSelect.SearchSelect
+                  mode="single"
                   name="gitlab"
                   label="选择gitlab仓库"
                   options={gitLabList.map(({ id, name, url }) => {
