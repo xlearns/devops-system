@@ -22,7 +22,6 @@ class Http {
     Http.initConfig = mergedConfig;
     this.httpInterceptorsRequest();
     this.httpInterceptorsResponse();
-    this.handleTimeoutError();
   }
 
   private httpInterceptorsRequest() {
@@ -68,24 +67,6 @@ class Http {
     );
   }
 
-  private handleTimeoutError() {
-    const instance = Http.axiosInstance;
-    instance.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (Axios.isCancel(error)) {
-          return Promise.reject(error);
-        }
-
-        if (error.code === 'ECONNABORTED') {
-          message.error('请求超时，请稍后重试');
-        }
-
-        return Promise.reject(error);
-      },
-    );
-  }
-
   public request<T>(
     method: string,
     url: string,
@@ -106,7 +87,13 @@ class Http {
           resolve(response as T);
         })
         .catch((error) => {
-          reject(error);
+          if (Axios.isCancel(error)) {
+            return reject(error);
+          }
+          if (error.code === 'ECONNABORTED') {
+            message.error('请求超时，请稍后重试');
+          }
+          return reject(error);
         });
     });
   }
@@ -161,6 +148,10 @@ export const http = new Http();
 
 export const apiHttp = new Http({
   baseURL: 'api',
+  beforeRequestCallback(config: Record<string, any>) {
+    config.headers['token'] = '' + sessionStorage.getItem('@gitlab-token');
+    return config;
+  },
   beforeResponseCallback(response: { data: IRequest }) {
     const { data } = response;
     const { code, message: msg } = data;

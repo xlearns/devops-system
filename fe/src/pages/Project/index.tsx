@@ -17,13 +17,19 @@ import {
 } from "@ant-design/pro-components";
 import { useModel, useRequest } from "@umijs/max";
 import type { MenuProps } from "antd";
-import { Button, Col, Dropdown, Modal, Row, Table } from "antd";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Button, Col, Dropdown, FormInstance, Modal, Row, Table } from "antd";
+import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { apiHttp } from "@/utils/http";
 import type { IRequest } from "@/utils/http";
 import type { IServeList } from "@/pages/interface";
 import CodeMirror from "@uiw/react-codemirror";
-import { StreamLanguage } from "@codemirror/language";
+import { isFunction } from "@/utils/judgment";
+
+interface IFormBase {
+  host: string;
+  gitlab: string;
+  branch: string;
+}
 
 const items: MenuProps["items"] = [
   {
@@ -91,27 +97,16 @@ const Project: React.FC<unknown> = () => {
   const [branchList, setBranchList] = useState([]);
   const [visible, setVisible] = useState(false);
   const { type, changeListType } = useListType();
+  const formRef = useRef<FormInstance<IFormBase>>(null);
 
   const { run: getGitlabProjectAll } = useRequest(
     () => {
-      return apiHttp.get<IRequest>("project", null, {
-        beforeRequestCallback(config: Record<string, any>) {
-          config.headers["token"] =
-            "" + sessionStorage.getItem("@gitlab-token");
-          return config;
-        },
-      });
+      return apiHttp.get<IRequest>("project");
     },
     {
       manual: true,
     }
   );
-
-  function createProject() {
-    // setProject((attr) => {
-    //   return [...attr, {}];
-    // });
-  }
 
   async function init() {
     const res = await getGitlabProjectAll();
@@ -152,9 +147,22 @@ const Project: React.FC<unknown> = () => {
     );
   }, [project, type]);
 
-  useEffect(() => {
-    // getBranch
-  }, [serveList]);
+  function resetFormOfKey(
+    target: RefObject<FormInstance<IFormBase>>,
+    arr: [string, (res: any) => any, (res: any) => any][]
+  ) {
+    const names = arr.map(([name, fn, val]) => {
+      isFunction(fn) && fn(val);
+      return name;
+    });
+    target?.current?.resetFields(names);
+  }
+
+  function resetFormOfBase(
+    arr: [string, (res: any) => any, (res: any) => any][]
+  ) {
+    resetFormOfKey(formRef, arr);
+  }
 
   useEffect(() => {
     init();
@@ -185,6 +193,7 @@ const Project: React.FC<unknown> = () => {
               New project
             </Button>
             <StepsForm
+              formRef={formRef}
               onFinish={async (values) => {
                 setVisible(false);
               }}
@@ -209,6 +218,7 @@ const Project: React.FC<unknown> = () => {
               }}
             >
               <StepsForm.StepForm
+                formRef={formRef}
                 name="base"
                 title="基本配置"
                 onFinish={async () => {
@@ -217,16 +227,16 @@ const Project: React.FC<unknown> = () => {
                 onValuesChange={async (changedValues) => {
                   if (changedValues.gitlab) {
                     const gitlabValue = changedValues.gitlab;
+                    resetFormOfBase([["branch", setBranchList, () => []]]);
                     const { data } = await apiHttp.get<IRequest>(
                       "project/branchs",
                       {
                         id: gitlabValue,
                       }
                     );
+
                     if (data) {
                       setBranchList(data);
-                    } else {
-                      setBranchList(() => []);
                     }
                   }
                 }}
