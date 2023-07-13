@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 type TNString = string | number;
 
-interface IProject {
+export interface IProject {
   id?: TNString;
   name?: Extract<TNString, string>;
   description?: Extract<TNString, string>;

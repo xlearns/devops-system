@@ -24,12 +24,10 @@ import type { IRequest } from "@/utils/http";
 import type { IServeList } from "@/pages/interface";
 import CodeMirror from "@uiw/react-codemirror";
 import { isFunction } from "@/utils/judgment";
-
-interface IFormBase {
-  host: string;
-  gitlab: string;
-  branch: string;
-}
+import Pipeline from "./Pipeline";
+import { resetFormOfKey } from "./utils";
+import { IFormBase } from "./interface";
+import Base from "./Base";
 
 const items: MenuProps["items"] = [
   {
@@ -60,18 +58,6 @@ const columns = [
     key: "update",
   },
 ];
-
-const code = `pipeline {
-  agent any
-  stages {
-      stage('Hello') {
-          steps {
-              echo 'Hello World'
-          }
-      }
-  }
-}
-`;
 
 function isHasData(data: unknown[]) {
   if (!Array.isArray(data)) return;
@@ -147,23 +133,6 @@ const Project: React.FC<unknown> = () => {
     );
   }, [project, type]);
 
-  function resetFormOfKey(
-    target: RefObject<FormInstance<IFormBase>>,
-    arr: [string, (res: any) => any, (res: any) => any][]
-  ) {
-    const names = arr.map(([name, fn, val]) => {
-      isFunction(fn) && fn(val);
-      return name;
-    });
-    target?.current?.resetFields(names);
-  }
-
-  function resetFormOfBase(
-    arr: [string, (res: any) => any, (res: any) => any][]
-  ) {
-    resetFormOfKey(formRef, arr);
-  }
-
   useEffect(() => {
     init();
   }, []);
@@ -217,133 +186,14 @@ const Project: React.FC<unknown> = () => {
                 );
               }}
             >
-              <StepsForm.StepForm
+              <Base
                 formRef={formRef}
-                name="base"
-                title="基本配置"
-                onFinish={async () => {
-                  return true;
-                }}
-                onValuesChange={async (changedValues) => {
-                  if (changedValues.gitlab) {
-                    const { value: gitlabValue } = changedValues.gitlab;
-                    resetFormOfBase([["branch", setBranchList, () => []]]);
-                    const { data } = await apiHttp.get<IRequest>(
-                      "project/branchs",
-                      {
-                        id: gitlabValue,
-                      }
-                    );
-
-                    if (data) {
-                      setBranchList(data);
-                    }
-                  }
-                }}
-              >
-                <ProFormSelect
-                  name="host"
-                  label="选择服务器"
-                  options={serveList.map(({ host }) => {
-                    return {
-                      label: host,
-                      value: host,
-                    };
-                  })}
-                  placeholder="Please select"
-                  rules={[{ required: false }]}
-                />
-
-                <ProFormSelect.SearchSelect
-                  mode="single"
-                  name="gitlab"
-                  label="选择gitlab仓库"
-                  options={gitLabList.map(({ id, name, url }) => {
-                    return {
-                      label: name,
-                      value: id,
-                      url,
-                    };
-                  })}
-                  fieldProps={{
-                    optionItemRender(item: { label: string; url: string }) {
-                      return (
-                        <div title={item.url}>
-                          <span style={{ color: "red" }}>{item.label}</span> -{" "}
-                          {item.url}
-                        </div>
-                      );
-                    },
-                  }}
-                  placeholder="Please select"
-                  rules={[{ required: true }]}
-                />
-                <ProFormSelect
-                  name="branch"
-                  label="选择分支"
-                  options={branchList.map(({ name, id }) => {
-                    return {
-                      label: name,
-                      value: id,
-                    };
-                  })}
-                  placeholder="Please select"
-                  rules={[{ required: true }]}
-                />
-              </StepsForm.StepForm>
-              <StepsForm.StepForm name="checkbox" title="设置流水线">
-                <CodeMirror
-                  value={code}
-                  height="200px"
-                  readOnly={false}
-                  onChange={(value, viewUpdate) => {
-                    console.log("value:", value);
-                  }}
-                />
-              </StepsForm.StepForm>
-              <StepsForm.StepForm name="time" title="发布实验">
-                <ProFormCheckbox.Group
-                  name="checkbox"
-                  label="部署单元"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                  options={["部署单元1", "部署单元2", "部署单元3"]}
-                />
-                <ProFormSelect
-                  label="部署分组策略"
-                  name="remark"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                  width="md"
-                  initialValue="1"
-                  options={[
-                    {
-                      value: "1",
-                      label: "策略一",
-                    },
-                    { value: "2", label: "策略二" },
-                  ]}
-                />
-                <ProFormSelect
-                  label="Pod 调度策略"
-                  name="remark2"
-                  width="md"
-                  initialValue="2"
-                  options={[
-                    {
-                      value: "1",
-                      label: "策略一",
-                    },
-                    { value: "2", label: "策略二" },
-                  ]}
-                />
-              </StepsForm.StepForm>
+                setBranchList={setBranchList}
+                serveList={serveList}
+                gitLabList={gitLabList}
+                branchList={branchList}
+              />
+              <Pipeline />
             </StepsForm>
           </div>
         ),
