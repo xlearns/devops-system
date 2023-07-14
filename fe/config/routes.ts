@@ -9,18 +9,6 @@ export default [
         path: '/',
         redirect: '/serve',
       },
-      // {
-      //   name: '概要',
-      //   path: '/home',
-      //   icon: 'HomeOutlined',
-      //   component: './Home',
-      // },
-      // {
-      //   name: 'CICD',
-      //   path: '/cicd',
-      //   icon: 'CodeOutlined',
-      //   component: './Access',
-      // },
       {
         name: '服务器管理',
         path: '/serve',
@@ -39,6 +27,24 @@ export default [
         icon: 'CodeOutlined',
         component: './Project',
       },
+      // {
+      //   name: '日志管理',
+      //   path: '/project',
+      //   icon: 'CodeOutlined',
+      //   component: './Project',
+      // },
+      // {
+      //   name: '系统监控',
+      //   path: '/project',
+      //   icon: 'CodeOutlined',
+      //   component: './Project',
+      // },
+      // {
+      //   name: '容器管理',
+      //   path: '/project',
+      //   icon: 'CodeOutlined',
+      //   component: './Project',
+      // },
       {
         path: '*', // 通配符路径，匹配所有未定义的路径
         element: '404',
