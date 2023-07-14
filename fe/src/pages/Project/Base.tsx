@@ -12,8 +12,6 @@ import { IRequest, apiHttp } from "@/utils/http";
 import { IServeList } from "../interface";
 
 interface IPort {
-  formRef: RefObject<FormInstance<IFormBase>>;
-  setBranchList: (args: any) => any;
   serveList: IServeList[];
   gitLabList: IProject[];
   branchList: IProject[];
@@ -28,39 +26,33 @@ const environments = [
     label: "node",
     value: "node",
   },
+  {
+    label: "python",
+    value: "python",
+  },
+  {
+    label: "golang",
+    value: "golang",
+  },
+];
+
+const cicdList = [
+  {
+    label: "jenkins",
+    value: "jenkins",
+  },
+  {
+    label: "gitlab",
+    value: "gitlab",
+    disabled: true,
+  },
 ];
 
 const Base: React.FC<IPort> = (props) => {
-  const { formRef, setBranchList, serveList, gitLabList, branchList } = props;
-
-  function resetFormOfBase(
-    arr: [string, (res: any) => any, (res: any) => any][]
-  ) {
-    resetFormOfKey(formRef, arr);
-  }
+  const { serveList, gitLabList, branchList } = props;
 
   return (
-    <StepsForm.StepForm
-      formRef={formRef}
-      name="base"
-      title="基本配置"
-      onFinish={async () => {
-        return true;
-      }}
-      onValuesChange={async (changedValues) => {
-        if (changedValues.gitlab) {
-          const { value: gitlabValue } = changedValues.gitlab;
-          resetFormOfBase([["branch", setBranchList, () => []]]);
-          const { data } = await apiHttp.get<IRequest>("project/branchs", {
-            id: gitlabValue,
-          });
-
-          if (data) {
-            setBranchList(data);
-          }
-        }
-      }}
-    >
+    <>
       <ProFormText
         name="name"
         label="名称"
@@ -123,13 +115,27 @@ const Base: React.FC<IPort> = (props) => {
       />
 
       <ProFormSelect
+        name="cicd"
+        label="CI/CD"
+        options={cicdList.map(({ label, value, disabled }) => {
+          return {
+            label,
+            value,
+            disabled,
+          };
+        })}
+        placeholder="Please select"
+        rules={[{ required: true }]}
+      />
+
+      <ProFormSelect
         name="env"
         label="环境"
         options={environments}
         placeholder="Please select"
         rules={[{ required: true }]}
       />
-    </StepsForm.StepForm>
+    </>
   );
 };
 

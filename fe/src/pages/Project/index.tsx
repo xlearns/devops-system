@@ -3,27 +3,16 @@ import { formatTime } from "@/utils/format";
 import { MoreOutlined } from "@ant-design/icons";
 import {
   CheckCard,
-  ModalForm,
   PageContainer,
-  ProForm,
-  ProFormCheckbox,
-  ProFormDatePicker,
-  ProFormDateTimePicker,
-  ProFormInstance,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
   StepsForm,
 } from "@ant-design/pro-components";
 import { useModel, useRequest } from "@umijs/max";
 import type { MenuProps } from "antd";
 import { Button, Col, Dropdown, FormInstance, Modal, Row, Table } from "antd";
-import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { apiHttp } from "@/utils/http";
 import type { IRequest } from "@/utils/http";
 import type { IServeList } from "@/pages/interface";
-import CodeMirror from "@uiw/react-codemirror";
-import { isFunction } from "@/utils/judgment";
 import Pipeline from "./Pipeline";
 import { resetFormOfKey } from "./utils";
 import { IFormBase } from "./interface";
@@ -137,6 +126,12 @@ const Project: React.FC<unknown> = () => {
     init();
   }, []);
 
+  function resetFormOfBase(
+    arr: [string, (res: any) => any, (res: any) => any][]
+  ) {
+    resetFormOfKey(formRef, arr);
+  }
+
   return (
     <PageContainer
       className="ant-page-project-container"
@@ -186,14 +181,39 @@ const Project: React.FC<unknown> = () => {
                 );
               }}
             >
-              <Base
+              <StepsForm.StepForm
                 formRef={formRef}
-                setBranchList={setBranchList}
-                serveList={serveList}
-                gitLabList={gitLabList}
-                branchList={branchList}
-              />
-              <Pipeline />
+                name="base"
+                title="基本配置"
+                onFinish={async () => {
+                  return true;
+                }}
+                onValuesChange={async (changedValues) => {
+                  if (changedValues.gitlab) {
+                    const { value: gitlabValue } = changedValues.gitlab;
+                    resetFormOfBase([["branch", setBranchList, () => []]]);
+                    const { data } = await apiHttp.get<IRequest>(
+                      "project/branchs",
+                      {
+                        id: gitlabValue,
+                      }
+                    );
+
+                    if (data) {
+                      setBranchList(data);
+                    }
+                  }
+                }}
+              >
+                <Base
+                  serveList={serveList}
+                  gitLabList={gitLabList}
+                  branchList={branchList}
+                />
+              </StepsForm.StepForm>
+              <StepsForm.StepForm name="checkbox" title="设置流水线">
+                <Pipeline />
+              </StepsForm.StepForm>
             </StepsForm>
           </div>
         ),
