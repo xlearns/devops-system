@@ -7,6 +7,7 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
+
 import { ServeService } from './serve.service';
 import { Serve } from '@/entities/Serve';
 
@@ -16,7 +17,7 @@ export class ServeController {
 
   @Post()
   async create(@Body() createServeDto: Serve) {
-    // request type x-www-form-urlencoded
+    // request type x-www-form-urlencoded / json
     return this.serveService.create(createServeDto);
   }
 

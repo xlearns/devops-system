@@ -144,14 +144,12 @@ export default () => {
             const { id, isEdit } = row;
             const data = omit(row, ["id", "isEdit", "index"]);
             if (isEdit && id) {
-              await apiHttp.put(`serve/${id}`, {
+              await apiHttp.put<IRequest>(`serve/${id}`, {
                 data,
               });
               changeEditState(false, id);
             } else {
-              await apiHttp.post("serve", {
-                data,
-              });
+              await apiHttp.post<IRequest>("serve", data);
             }
             getTable();
           },

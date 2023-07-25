@@ -159,6 +159,10 @@ const Project: React.FC<unknown> = () => {
             <StepsForm
               formRef={formRef}
               onFinish={async (values) => {
+                const data = await apiHttp.post<IRequest>("product/create", {
+                  product: values,
+                });
+                console.log(data);
                 setVisible(false);
               }}
               formProps={{

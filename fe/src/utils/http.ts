@@ -100,14 +100,14 @@ class Http {
 
   public post<T>(
     url: string,
-    data?: any,
+    _?: any,
     config?: Record<string, any>,
   ): Promise<T> {
     return this.request<T>(
       'post',
       url,
       {
-        data,
+        data: _,
       },
       config,
     );

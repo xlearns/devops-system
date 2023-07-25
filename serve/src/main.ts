@@ -5,6 +5,7 @@ import { ResponseFormatInterceptor } from './shared/interceptors/ResponseFormat'
 import { AllExceptionsFilter } from './shared/interceptors/HttpExceptionFilter';
 import { ConfigService } from '@nestjs/config';
 import fastify from 'fastify';
+import type { RawServerDefault } from 'fastify';
 import { FastifyLogger } from './logger';
 
 async function bootstrap() {
@@ -16,7 +17,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(
     AppModule,
-    new FastifyAdapter(fastifyInstance as any),
+    new FastifyAdapter(fastifyInstance as unknown as RawServerDefault),
   );
   app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)));
   app.useGlobalInterceptors(new ResponseFormatInterceptor());

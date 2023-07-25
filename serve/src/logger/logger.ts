@@ -54,14 +54,12 @@ export const fastLogger = (opt) => {
     ...opt,
   };
 
-  // 添加落库日志
   const allStreams = [
     {
       stream: new FileStream(reOpt).trans,
     },
   ];
 
-  // 开发环境打印控制台日志
   if (reOpt.console) {
     allStreams.push({
       stream: new LogStream().trans,
