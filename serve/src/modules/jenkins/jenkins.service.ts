@@ -13,6 +13,9 @@ export class JenkinsService {
     });
   }
 
+  /**
+   * @description: create jenkins pipeline.
+   */
   async createJenkins(jobName, config) {
     const jenkins = this.getJenkins();
     const isExist = await jenkins.job.exists(jobName);
@@ -23,17 +26,22 @@ export class JenkinsService {
     return jenkins.job.config(jobName, jksConfig);
   }
 
+  /**
+   * @description: trigger jenkins pipeline.
+   */
   async buildJenkins({ job, config = '' }) {
     try {
       const jenkins = this.getJenkins();
       await this.createJenkins(job, config);
       await jenkins.job.build(job);
-      return '构建成功';
+      return 'build success.';
     } catch (e) {
-      return '构建失败';
+      return 'build failure.';
     }
   }
-
+  /**
+   * @description: Get current node information.
+   */
   async getQueuedInfo({ queueId }) {
     const jenkins = this.getJenkins();
     const jenkinsCallback: any = await new Promise((resolve) => {
@@ -47,7 +55,9 @@ export class JenkinsService {
     });
     return { data: jenkinsCallback };
   }
-
+  /**
+   * @description: retrieve current build information.
+   */
   async getJenkinsInfo(job) {
     const jenkins = this.getJenkins();
     const buildId = await jenkins.job.build(job);
@@ -92,6 +102,9 @@ export class JenkinsService {
     });
   }
 
+  /**
+   * @description: retrieve jenkins console log information.
+   */
   async getJenkinsConsole(job) {
     const jenkins = this.getJenkins();
     const buildId = await jenkins.job.build(job);
@@ -118,5 +131,43 @@ export class JenkinsService {
       data,
       buildNumber,
     };
+  }
+
+  /**
+   * @description: Get the status of each stage of the latest build of a job.
+   */
+  async getStageStatus(job) {
+    const jenkins = this.getJenkins();
+    const buildId = await jenkins.job.build(job);
+    const buildNumber = await this.waitForBuildNumber(buildId);
+
+    const jenkinsCallback: any = await new Promise((resolve) => {
+      jenkins.build.get(job, buildNumber, (err: any, data: any) => {
+        if (err) {
+          console.log('err---->', err);
+          throw err;
+        }
+        resolve(data);
+      });
+    });
+
+    if (jenkinsCallback && jenkinsCallback.actions) {
+      const stageView = jenkinsCallback.actions.find(
+        (action) =>
+          action._class ===
+          'org.jenkinsci.plugins.pipeline.modeldefinition.actions.StageViewAction',
+      );
+
+      if (stageView) {
+        const stages = stageView.stages.map((stage) => ({
+          name: stage.name,
+          status: stage.status,
+        }));
+
+        return { stages };
+      }
+    }
+
+    return { error: 'No stage information found.' };
   }
 }

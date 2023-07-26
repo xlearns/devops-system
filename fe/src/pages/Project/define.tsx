@@ -1,10 +1,20 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { IProject } from "@/models/global";
-import { Button, Card, Descriptions } from "antd";
+import { Button, Card, Descriptions, Drawer } from "antd";
 import { apiHttp } from "@/utils/http";
+import { useState } from "react";
 
 const Define: React.FC<{ content: IProject }> = ({ content }) => {
+  const [childrenDrawer, setChildrenDrawer] = useState(false);
   const { pipeline, gitlab, branch, host, cicd, env, name } = content;
+
+  const showChildrenDrawer = () => {
+    setChildrenDrawer(true);
+  };
+
+  const onChildrenDrawerClose = () => {
+    setChildrenDrawer(false);
+  };
 
   async function cicdBuild() {
     if (cicd != "jenkins") return;
@@ -55,7 +65,9 @@ const Define: React.FC<{ content: IProject }> = ({ content }) => {
       </Card>
       <div className="mt-[20px]"></div>
       <div className="flex flex-col gap-[20px]">
-        <Button className="w-full">查看构建结果</Button>
+        <div>
+          <Button onClick={showChildrenDrawer}>查看构建结果</Button>
+        </div>
         <Button className="w-full" onClick={cicdBuild}>
           构建
         </Button>
@@ -66,6 +78,15 @@ const Define: React.FC<{ content: IProject }> = ({ content }) => {
           删 除
         </Button>
       </div>
+      <Drawer
+        title="Two-level Drawer"
+        width={500}
+        closable={false}
+        onClose={onChildrenDrawerClose}
+        open={childrenDrawer}
+      >
+        This is two-level drawer
+      </Drawer>
     </>
   );
 };
