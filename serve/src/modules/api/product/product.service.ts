@@ -13,6 +13,12 @@ export class ProductService {
   ) {}
 
   async create(rep: Product) {
+    if (!rep) {
+      throw new HttpException(
+        { message: 'The product must be delivered.', code: 400 },
+        400,
+      );
+    }
     delete rep.id;
     const intercept = interceptOfKey(rep, [
       'name',
@@ -31,8 +37,8 @@ export class ProductService {
     };
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    return await this.ProductRepo.find();
   }
 
   findOne(id: number) {

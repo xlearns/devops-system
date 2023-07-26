@@ -30,4 +30,6 @@ export class Product {
     key: string;
     ulr: string;
   };
+  @Column('longtext')
+  pipeline: string;
 }

@@ -107,7 +107,7 @@ class Http {
       'post',
       url,
       {
-        data: _,
+        ..._,
       },
       config,
     );

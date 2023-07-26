@@ -17,4 +17,7 @@
 - Configuration Management
 - Fault Recovery and Disaster Recovery
 - Environment Management
+  - IaC
+    - Ansible
+    - Terraform
 - Automated Deployment and Rollback

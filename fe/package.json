@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@ant-design/pro-card": "^2.5.7",
     "@ant-design/pro-components": "^2.4.4",
     "@codemirror/lang-javascript": "^6.1.9",
     "@codemirror/language": "^6.8.0",

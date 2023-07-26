@@ -149,7 +149,9 @@ export default () => {
               });
               changeEditState(false, id);
             } else {
-              await apiHttp.post<IRequest>("serve", data);
+              await apiHttp.post<IRequest>("serve", {
+                data,
+              });
             }
             getTable();
           },

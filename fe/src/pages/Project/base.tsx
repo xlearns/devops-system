@@ -1,56 +1,8 @@
-import type { FormInstance } from "@ant-design/pro-components";
-import type { IFormBase } from "./interface";
-import type { RefObject } from "react";
-import type { IProject } from "@/models/global";
-import {
-  ProFormSelect,
-  ProFormText,
-  StepsForm,
-} from "@ant-design/pro-components";
-import { resetFormOfKey } from "./utils";
-import { IRequest, apiHttp } from "@/utils/http";
-import { IServeList } from "../interface";
-
-interface IPort {
-  serveList: IServeList[];
-  gitLabList: IProject[];
-  branchList: IProject[];
-}
-
-const environments = [
-  {
-    label: "java",
-    value: "java",
-  },
-  {
-    label: "node",
-    value: "node",
-  },
-  {
-    label: "python",
-    value: "python",
-  },
-  {
-    label: "golang",
-    value: "golang",
-  },
-];
-
-const cicdList = [
-  {
-    label: "jenkins",
-    value: "jenkins",
-  },
-  {
-    label: "gitlab",
-    value: "gitlab",
-    disabled: true,
-  },
-];
-
+import { ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { IPort } from "./interface";
+import { environments, cicdList } from "./content";
 const Base: React.FC<IPort> = (props) => {
   const { serveList, gitLabList, branchList } = props;
-
   return (
     <>
       <ProFormText

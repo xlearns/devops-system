@@ -15,12 +15,6 @@ export class ProductController {
 
   @Post('create')
   async create(@Body('product') product) {
-    if (!product) {
-      throw new HttpException(
-        { message: 'The product must be delivered.', code: 400 },
-        400,
-      );
-    }
     const data = await this.productService.create(product);
     return {
       data,
@@ -28,8 +22,11 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  async findAll() {
+    const data = await this.productService.findAll();
+    return {
+      data,
+    };
   }
 
   @Get(':id')

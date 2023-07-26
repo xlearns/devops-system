@@ -18,6 +18,7 @@ import { ProcessModule } from './modules/api/process/process.module';
 import { ProjectModule } from './modules/api/project/project.module';
 import { ServeModule } from './modules/api/serve/serve.module';
 import { ProductModule } from './modules/api/product/product.module';
+import { CicdModule } from './modules/api/cicd/cicd.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { ProductModule } from './modules/api/product/product.module';
     ProjectModule,
     ServeModule,
     ProductModule,
+    CicdModule,
   ],
   controllers: [AppController],
   providers: [AppService],

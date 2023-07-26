@@ -1,19 +1,24 @@
 import { Button } from "antd";
 import CodeMirror from "@uiw/react-codemirror";
 import { isFunction } from "@/utils/judgment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+export interface IPipeline {
+  code: string;
+  setCode: (args: any) => any;
+}
 
 const defaultCode = `pipeline {
-    agent any
-    stages {
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
-            }
-        }
-    }
+  agent any
+  stages {
+      stage('Hello') {
+          steps {
+              echo 'Hello World'
+          }
+      }
   }
-  `;
+}
+`;
 
 const ComTemplate: React.FC<{ updateTemplate?: (args: any) => any }> = ({
   updateTemplate,
@@ -75,12 +80,14 @@ const ComTemplate: React.FC<{ updateTemplate?: (args: any) => any }> = ({
   );
 };
 
-const Pipeline: React.FC<unknown> = () => {
-  const [code, setCode] = useState(defaultCode);
-
+const Pipeline: React.FC<IPipeline> = ({ code, setCode }) => {
   function updateTemplate(temp: string) {
     temp && setCode(temp);
   }
+
+  useEffect(() => {
+    updateTemplate(defaultCode);
+  }, []);
 
   return (
     <div className="flex items-center gap-[30px]">
@@ -98,7 +105,7 @@ const Pipeline: React.FC<unknown> = () => {
           height="200px"
           readOnly={false}
           onChange={(value, viewUpdate) => {
-            console.log("value:", value);
+            setCode(value);
           }}
         />
       </div>
