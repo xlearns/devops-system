@@ -43,9 +43,6 @@ const Define: React.FC<{
         data: {
           projectId: gitlab.key,
           targetUrl: JENKINSPROJECTURL + name,
-          config: {
-            push_events: true,
-          },
         },
       });
     } catch (e) {

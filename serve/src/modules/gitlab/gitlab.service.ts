@@ -144,12 +144,15 @@ export class GitlabService {
   }
 
   async addWebHookApi(projectId, targetUrl) {
-    // set header Authorization Bearer this.#token
-    this.httpService.post(
-      `${this.config.get(
+    this.httpService.axiosRef({
+      method: 'POST',
+      baseURL: `${this.config.get(
         'GIT_URL',
       )}/api/v4/projects/${projectId}/hooks?url=${targetUrl}&push_events=true`,
-    );
+      headers: {
+        Authorization: `Bearer ${this.#token}`,
+      },
+    });
   }
 
   async revokeAccess(token: string): Promise<void> {

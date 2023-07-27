@@ -28,8 +28,8 @@ export class ProjectController {
   }
   @Post('webhook')
   async webhook(@Body() data) {
-    const { projectId, targetUrl, config } = data;
-    await this.gitlab.addWebHook(projectId, targetUrl, config);
+    const { projectId, targetUrl } = data;
+    await this.gitlab.addWebHookApi(projectId, targetUrl);
     return {
       data: 'added successfully!',
     };
