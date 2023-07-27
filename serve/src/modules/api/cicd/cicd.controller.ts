@@ -15,16 +15,17 @@ export class CicdController {
   constructor(private readonly cicdService: CicdService) {}
 
   @Post()
-  async CreateJenkins(@Body('code') code: string, @Body('name') name: string) {
+  async CreateJenkins(@Body('code') code, @Body('name') name: string) {
     const data = await this.cicdService.CreateJenkins(name, code);
     return {
       data,
     };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cicdService.findOne(+id);
+  @Get()
+  async GetJenkinsConsole(@Query('name') name: string) {
+    const data = await this.cicdService.GetJenkinsConsole(name);
+    return data;
   }
 
   @Patch(':id')

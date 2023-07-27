@@ -9,12 +9,7 @@ export class CicdService {
   }
 
   async CreateJenkins(name, code) {
-    if (!name) {
-      throw new HttpException(
-        { code: 400, message: 'The name must be delivered. ' },
-        400,
-      );
-    }
+    this.exception('name', name);
     const data = await this.JenkinsService.buildJenkins({
       job: name,
       config: code,
@@ -22,8 +17,10 @@ export class CicdService {
     return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cicd`;
+  async GetJenkinsConsole(name: string) {
+    this.exception('name', name);
+    const data = await this.JenkinsService.getJenkinsConsole(name);
+    return data;
   }
 
   update(id: number, updateCicdDto) {
@@ -32,5 +29,14 @@ export class CicdService {
 
   remove(id: number) {
     return `This action removes a #${id} cicd`;
+  }
+
+  private exception(k: string, v: string) {
+    if (!v) {
+      throw new HttpException(
+        { code: 400, message: `The ${k} must be delivered. ` },
+        400,
+      );
+    }
   }
 }

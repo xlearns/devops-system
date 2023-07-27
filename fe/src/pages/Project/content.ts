@@ -1,5 +1,5 @@
 import { MenuProps } from "antd";
-
+export const JENKINSPROJECTURL = "http://192.168.3.105:17173/project/";
 export const environments = [
   {
     label: "java",

@@ -26,7 +26,14 @@ export class ProjectController {
   create(@Body() createProjectDto: CreateProjectDto) {
     return this.projectService.create(createProjectDto);
   }
-
+  @Post('webhook')
+  async webhook(@Body() data) {
+    const { projectId, targetUrl, config } = data;
+    await this.gitlab.addWebHook(projectId, targetUrl, config);
+    return {
+      data: 'added successfully!',
+    };
+  }
   @Get()
   async getGitLab(@Request() req) {
     const { query } = req;

@@ -29,7 +29,7 @@ export class JenkinsService {
   /**
    * @description: trigger jenkins pipeline.
    */
-  async buildJenkins({ job, config = '' }) {
+  async buildJenkins({ job, config }) {
     try {
       const jenkins = this.getJenkins();
       await this.createJenkins(job, config);
@@ -98,7 +98,7 @@ export class JenkinsService {
         } catch (e) {
           reject(e);
         }
-      }, 500);
+      }, 60);
     });
   }
 
@@ -109,9 +109,7 @@ export class JenkinsService {
     const jenkins = this.getJenkins();
     const buildId = await jenkins.job.build(job);
     const buildNumber = await this.waitForBuildNumber(buildId);
-
     const logStream = jenkins.build.logStream(job, buildNumber, 'text', 2000);
-
     const data = await new Promise((resolve, reject) => {
       let res = '';
       logStream.on('data', (text) => {

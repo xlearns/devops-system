@@ -134,6 +134,24 @@ export class GitlabService {
     return repositories;
   }
 
+  async addWebHook(
+    projectId: string,
+    targetUrl: string,
+    config: Record<string, string>,
+  ) {
+    console.log();
+    await this.#api.ProjectHooks.add(projectId, targetUrl, config);
+  }
+
+  async addWebHookApi(projectId, targetUrl) {
+    // set header Authorization Bearer this.#token
+    this.httpService.post(
+      `${this.config.get(
+        'GIT_URL',
+      )}/api/v4/projects/${projectId}/hooks?url=${targetUrl}&push_events=true`,
+    );
+  }
+
   async revokeAccess(token: string): Promise<void> {
     this.httpService.post(`${this.config.get('GIT_URL')}/oauth/revoke`, {
       client_id: process.env.GITLAB_ID,

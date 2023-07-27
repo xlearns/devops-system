@@ -5,6 +5,7 @@ import { IRequest, apiHttp } from "@/utils/http";
 import { useEffect, useState } from "react";
 import { useUpdateProduct } from "./updateProduct";
 import JennkisTerminal from "./terminal";
+import { JENKINSPROJECTURL } from "./content";
 
 const Define: React.FC<{
   content: IProject;
@@ -12,9 +13,8 @@ const Define: React.FC<{
 }> = ({ content, setOpen }) => {
   const { getProduct } = useUpdateProduct();
   const [childrenDrawer, setChildrenDrawer] = useState(false);
-  const { pipeline, gitlab, branch, host, cicd, env, name } = content;
+  const { id, pipeline, gitlab, branch, host, cicd, env, name } = content;
   const [code, setCode] = useState<string>();
-
   const showChildrenDrawer = () => {
     setChildrenDrawer(true);
   };
@@ -24,7 +24,6 @@ const Define: React.FC<{
   };
 
   const onDelete = async () => {
-    const { id } = content;
     await apiHttp.delete(`product/delete/${id}`);
     getProduct();
     setOpen(false);
@@ -37,15 +36,35 @@ const Define: React.FC<{
     });
     getProduct();
   };
-
+  async function buildGitlabWebhook() {
+    if (!gitlab) return;
+    try {
+      await apiHttp.post<IRequest>("project/webhook", {
+        data: {
+          projectId: gitlab.key,
+          targetUrl: JENKINSPROJECTURL + name,
+          config: {
+            push_events: true,
+          },
+        },
+      });
+    } catch (e) {
+      console.log("webhook addition failed. ");
+    }
+  }
   async function cicdBuild() {
     if (cicd != "jenkins") return;
     const data = await apiHttp.post("cicd", {
       data: {
-        code: code,
+        code: {
+          code,
+          branch,
+          gitlab,
+        },
         name,
       },
     });
+    buildGitlabWebhook();
     console.log(data);
   }
   // Polling Console Output
@@ -94,12 +113,10 @@ const Define: React.FC<{
       </Card>
       <div className="mt-[20px]"></div>
       <div className="flex flex-col gap-[20px]">
-        <div>
+        <div className="flex gap-[20px]">
+          <Button onClick={cicdBuild}>构建</Button>
           <Button onClick={showChildrenDrawer}>查看构建结果</Button>
         </div>
-        <Button className="w-full" onClick={cicdBuild}>
-          构建
-        </Button>
         <Button className="w-full" type="primary" onClick={onSave}>
           保 存
         </Button>
@@ -109,13 +126,13 @@ const Define: React.FC<{
       </div>
       <Drawer
         title="构建结果"
-        width={500}
+        width={680}
         closable={false}
         onClose={onChildrenDrawerClose}
         open={childrenDrawer}
       >
         <div className="overflow-hidden">
-          <JennkisTerminal />
+          {childrenDrawer && name && <JennkisTerminal name={name} />}
         </div>
       </Drawer>
     </>
