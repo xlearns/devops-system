@@ -27,7 +27,7 @@ const Base: React.FC<IPort> = (props) => {
           };
         })}
         placeholder="Please select"
-        rules={[{ required: false }]}
+        rules={[{ required: true }]}
       />
 
       <ProFormSelect.SearchSelect

@@ -37,6 +37,15 @@ export class ProductService {
     };
   }
 
+  async update(id: number, data: Product) {
+    await this.findOneById(id);
+    delete data.id;
+    await this.ProductRepo.update(id, data);
+    return {
+      data: 'modified successfully',
+    };
+  }
+
   async findAll() {
     return await this.ProductRepo.find();
   }
@@ -45,11 +54,19 @@ export class ProductService {
     return `This action returns a #${id} product`;
   }
 
-  update(id: number) {
-    return `This action updates a #${id} product`;
+  async remove(id: number) {
+    await this.findOneById(id);
+    await this.ProductRepo.delete(id);
+    return {
+      data: 'delete successfully',
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  private async findOneById(id: number): Promise<Product> {
+    const userInfo = await this.ProductRepo.findOneById(id);
+    if (!userInfo) {
+      throw new HttpException(`指定 id=${id} 的Product不存在`, 404);
+    }
+    return userInfo;
   }
 }

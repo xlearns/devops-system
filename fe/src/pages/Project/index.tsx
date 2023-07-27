@@ -17,6 +17,7 @@ import Base from "./base";
 import Mode, { useListType } from "./mode";
 import PCard from "./pcard";
 import { columns } from "./content";
+import { useUpdateProduct } from "./updateProduct";
 
 function isHasData(data: unknown[]) {
   if (!Array.isArray(data)) return;
@@ -24,14 +25,14 @@ function isHasData(data: unknown[]) {
 }
 
 const Project: React.FC<unknown> = () => {
-  const { project, setProject } = useModel("global");
+  const { project } = useModel("global");
   const [code, setCode] = useState("");
   const { type, changeListType } = useListType();
   const [gitLabList, setGitLabList] = useState<IGitlabRepo[]>([]);
   const [serveList, setServeList] = useState<IServeList[]>([]);
   const [branchList, setBranchList] = useState([]);
   const [visible, setVisible] = useState(false);
-
+  const { getProduct } = useUpdateProduct();
   const dom = useRef(null);
 
   const formRef = useRef<FormInstance<IFormBase>>(null);
@@ -53,11 +54,6 @@ const Project: React.FC<unknown> = () => {
   async function getServe() {
     const { data } = await apiHttp.get<IRequest>("serve");
     setServeList(data);
-  }
-
-  async function getProduct() {
-    const { data } = await apiHttp.get<IRequest>("product");
-    setProject(data);
   }
 
   function init() {

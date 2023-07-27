@@ -52,7 +52,7 @@ const Pcard: React.FC<IPcard> = ({ list }) => {
         onClose={onClose}
         open={open}
       >
-        {active && <Define content={active} />}
+        {active && <Define content={active} setOpen={setOpen} />}
       </Drawer>
       <CheckCard.Group
         value={activeIndex}

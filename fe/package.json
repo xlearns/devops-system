@@ -26,7 +26,8 @@
     "antd": "^5.4.0",
     "axios": "^1.4.0",
     "codemirror": "^6.0.1",
-    "react-codemirror2": "^7.2.1"
+    "react-codemirror2": "^7.2.1",
+    "xterm": "^5.2.1"
   },
   "devDependencies": {
     "@types/qs": "^6.9.7",

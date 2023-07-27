@@ -5,7 +5,7 @@ import {
   Param,
   Delete,
   Body,
-  HttpException,
+  Put,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 
@@ -29,12 +29,17 @@ export class ProductController {
     };
   }
 
+  @Put('update/:id')
+  update(@Param('id') id: string, @Body() updateServeDto) {
+    return this.productService.update(+id, updateServeDto);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(+id);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
   }

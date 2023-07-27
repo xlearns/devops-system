@@ -2,6 +2,7 @@ import { Button } from "antd";
 import CodeMirror from "@uiw/react-codemirror";
 import { isFunction } from "@/utils/judgment";
 import { useEffect, useState } from "react";
+import { PipelineTemplates } from "./content";
 
 export interface IPipeline {
   code: string;
@@ -24,34 +25,6 @@ const ComTemplate: React.FC<{ updateTemplate?: (args: any) => any }> = ({
   updateTemplate,
 }) => {
   const [active, setActive] = useState(0);
-  const templates = [
-    {
-      name: "默认",
-      template: defaultCode,
-    },
-    {
-      name: "CICD部署",
-      template: `pipeline {
-          agent any
-          stages {
-              stage('Build') {
-                  steps {
-                  sh 'mvn clean package'
-                  }
-              }
-              stage('Deploy') {
-                  steps {
-                    sh 'docker build -t your_image_name .'
-                    sh 'docker push your_image_name'
-                    sh 'ssh user@your_server "docker pull your_image_name && docker run -d --name your_container_name -p 8080:8080 your_image_name"'
-                  }
-              }
-          }
-      }
-        `,
-    },
-  ];
-
   function update(str: string, num: number) {
     if (!updateTemplate) return;
     if (!isFunction(updateTemplate)) return;
@@ -61,7 +34,7 @@ const ComTemplate: React.FC<{ updateTemplate?: (args: any) => any }> = ({
 
   return (
     <>
-      {templates.map(({ name, template }, index) => {
+      {PipelineTemplates(defaultCode).map(({ name, template }, index) => {
         return (
           <Button
             key={index}
@@ -104,7 +77,7 @@ const Pipeline: React.FC<IPipeline> = ({ code, setCode }) => {
           width="600px"
           height="200px"
           readOnly={false}
-          onChange={(value, viewUpdate) => {
+          onChange={(value) => {
             setCode(value);
           }}
         />
