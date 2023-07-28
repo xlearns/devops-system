@@ -16,6 +16,7 @@ export interface IProject {
     label: Extract<TNString, string>;
     key: Extract<TNString, string>;
     url: Extract<TNString, string>;
+    hooksId?: TNString;
   };
   pipeline?: Extract<TNString, string>;
 }

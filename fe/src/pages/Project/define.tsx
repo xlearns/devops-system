@@ -1,11 +1,12 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { IProject } from "@/models/global";
-import { Button, Card, Descriptions, Drawer } from "antd";
+import { Button, Card, Descriptions, Drawer, notification } from "antd";
 import { IRequest, apiHttp } from "@/utils/http";
 import { useEffect, useState } from "react";
 import { useUpdateProduct } from "./updateProduct";
 import JennkisTerminal from "./terminal";
 import { JENKINSPROJECTURL } from "./content";
+import { NotificationType } from "./interface";
 
 const Define: React.FC<{
   content: IProject;
@@ -14,7 +15,9 @@ const Define: React.FC<{
   const { getProduct } = useUpdateProduct();
   const [childrenDrawer, setChildrenDrawer] = useState(false);
   const { id, pipeline, gitlab, branch, host, cicd, env, name } = content;
+  const [jenkinsName, setJenkinsName] = useState("");
   const [code, setCode] = useState<string>();
+
   const showChildrenDrawer = () => {
     setChildrenDrawer(true);
   };
@@ -28,46 +31,77 @@ const Define: React.FC<{
     getProduct();
     setOpen(false);
   };
-  const onSave = async () => {
+  const onSave = async (hooksId?: number) => {
     const { id, ...rest } = content;
     const data = { ...rest, pipeline: code };
+    hooksId &&
+      data.gitlab &&
+      (() => {
+        data.gitlab.hooksId = hooksId;
+      })();
+    console.log(data);
     await apiHttp.put<IRequest>(`product/update/${id}`, {
       data,
     });
     getProduct();
   };
+
   async function buildGitlabWebhook() {
     if (!gitlab) return;
     try {
-      await apiHttp.post<IRequest>("project/webhook", {
+      const { data } = await apiHttp.post<IRequest>("project/webhook", {
         data: {
           projectId: gitlab.key,
-          targetUrl: JENKINSPROJECTURL + name,
+          targetUrl: JENKINSPROJECTURL + jenkinsName,
+          hooksId: gitlab.hooksId,
         },
       });
-    } catch (e) {
-      console.log("webhook addition failed. ");
+      data?.id && onSave(data.id);
+    } catch (e: any) {
+      openNotificationWithIcon("error", "webhook addition failed.", e);
     }
   }
   async function cicdBuild() {
+    if (!gitlab) return;
     if (cicd != "jenkins") return;
-    const data = await apiHttp.post("cicd", {
-      data: {
-        code: {
-          code,
-          branch,
-          gitlab,
+    try {
+      await apiHttp.post("cicd", {
+        data: {
+          code: {
+            code,
+            branch,
+            gitlab,
+          },
+          name: jenkinsName,
         },
-        name,
-      },
-    });
+      });
+    } catch (e: any) {
+      openNotificationWithIcon("error", "cicd failed.", e);
+    }
     buildGitlabWebhook();
-    console.log(data);
   }
+
+  const openNotificationWithIcon = (
+    type: NotificationType,
+    message: string,
+    desc: any
+  ) => {
+    const description = desc?.message || JSON.stringify(desc, null, 2);
+    notification[type]({
+      message,
+      description,
+    });
+  };
+
   // Polling Console Output
   useEffect(() => {
     setCode(pipeline);
   }, [pipeline]);
+
+  useEffect(() => {
+    if (!gitlab || !id) return;
+    setJenkinsName(`${gitlab.key}-${id}`);
+  }, [gitlab?.key, id]);
 
   return (
     <>
@@ -111,10 +145,16 @@ const Define: React.FC<{
       <div className="mt-[20px]"></div>
       <div className="flex flex-col gap-[20px]">
         <div className="flex gap-[20px]">
-          <Button onClick={cicdBuild}>构建</Button>
-          <Button onClick={showChildrenDrawer}>查看构建结果</Button>
+          {/* <Button onClick={cicdBuild}>构建</Button> */}
+          <Button onClick={showChildrenDrawer}>构建</Button>
         </div>
-        <Button className="w-full" type="primary" onClick={onSave}>
+        <Button
+          className="w-full"
+          type="primary"
+          onClick={() => {
+            onSave();
+          }}
+        >
           保 存
         </Button>
         <Button className="w-full" type="primary" danger onClick={onDelete}>
@@ -129,7 +169,7 @@ const Define: React.FC<{
         open={childrenDrawer}
       >
         <div className="overflow-hidden">
-          {childrenDrawer && name && <JennkisTerminal name={name} />}
+          {childrenDrawer && name && <JennkisTerminal name={jenkinsName} />}
         </div>
       </Drawer>
     </>

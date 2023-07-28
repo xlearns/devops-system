@@ -73,3 +73,5 @@ export interface IGitlabRepo {
   update?: string;
   url?: string;
 }
+
+export type NotificationType = "success" | "info" | "warning" | "error";

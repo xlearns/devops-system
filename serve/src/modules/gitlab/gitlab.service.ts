@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Gitlab } from '@gitbeaker/node';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { AxiosResponse } from 'axios';
 
 export type GithubIssue = {
   id: number;
@@ -139,20 +140,42 @@ export class GitlabService {
     targetUrl: string,
     config: Record<string, string>,
   ) {
-    console.log();
     await this.#api.ProjectHooks.add(projectId, targetUrl, config);
   }
 
-  async addWebHookApi(projectId, targetUrl) {
-    this.httpService.axiosRef({
-      method: 'POST',
-      baseURL: `${this.config.get(
-        'GIT_URL',
-      )}/api/v4/projects/${projectId}/hooks?url=${targetUrl}&push_events=true`,
-      headers: {
-        Authorization: `Bearer ${this.#token}`,
-      },
-    });
+  async addWebHookApi(
+    projectId,
+    targetUrl,
+    hooksId,
+  ): Promise<AxiosResponse<any, any>> {
+    const url = `${this.config.get(
+      'GIT_URL',
+    )}/api/v4/projects/${projectId}/hooks?url=${targetUrl}&push_events=true`;
+
+    try {
+      if (hooksId) {
+        await this.httpService.axiosRef.delete(
+          `${this.config.get(
+            'GIT_URL',
+          )}/api/v4/projects/${projectId}/hooks/${hooksId}`,
+          {
+            headers: {
+              Accept: '*/*',
+              Authorization: `Bearer ${this.#token}`,
+            },
+          },
+        );
+      }
+      const { data } = await this.httpService.axiosRef.post(url, null, {
+        headers: {
+          Accept: '*/*',
+          Authorization: `Bearer ${this.#token}`,
+        },
+      });
+      return data;
+    } catch (e) {
+      throw new HttpException(e, 500);
+    }
   }
 
   async revokeAccess(token: string): Promise<void> {
