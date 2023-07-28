@@ -1,6 +1,6 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { IProject } from "@/models/global";
-import { Button, Card, Descriptions, Drawer, notification } from "antd";
+import { Button, Card, Descriptions, Drawer, Select, notification } from "antd";
 import { IRequest, apiHttp } from "@/utils/http";
 import { useEffect, useState } from "react";
 import { useUpdateProduct } from "./updateProduct";
@@ -27,7 +27,12 @@ const Define: React.FC<{
   };
 
   const onDelete = async () => {
-    await apiHttp.delete(`product/delete/${id}`);
+    await apiHttp.delete(`product/delete/${id}`, null, {
+      beforeRequestCallback: (config: Record<string, string>) => {
+        config["timeout"] = "100000";
+        return config;
+      },
+    });
     getProduct();
     setOpen(false);
   };
@@ -39,11 +44,15 @@ const Define: React.FC<{
       (() => {
         data.gitlab.hooksId = hooksId;
       })();
-    console.log(data);
-    await apiHttp.put<IRequest>(`product/update/${id}`, {
-      data,
-    });
-    getProduct();
+    try {
+      await apiHttp.put<IRequest>(`product/update/${id}`, {
+        data,
+      });
+      getProduct();
+      openNotificationWithIcon("success", "operation", "save successful.");
+    } catch (e) {
+      openNotificationWithIcon("error", "operation", e);
+    }
   };
 
   async function buildGitlabWebhook() {
@@ -75,6 +84,7 @@ const Define: React.FC<{
           name: jenkinsName,
         },
       });
+      openNotificationWithIcon("success", "cicd", "cicd create successful.");
     } catch (e: any) {
       openNotificationWithIcon("error", "cicd failed.", e);
     }
@@ -86,7 +96,10 @@ const Define: React.FC<{
     message: string,
     desc: any
   ) => {
-    const description = desc?.message || JSON.stringify(desc, null, 2);
+    const description =
+      typeof desc === "string"
+        ? desc
+        : desc?.message || JSON.stringify(desc, null, 2);
     notification[type]({
       message,
       description,
@@ -131,6 +144,8 @@ const Define: React.FC<{
       </Card>
       <div className="mt-[20px]"></div>
       <Card title="流水线" bordered={false}>
+        {/* 预装环境 -> run common */}
+        {false && <Button className="my-[20px]">ADD RULE</Button>}
         <CodeMirror
           className="flex-1"
           value={pipeline}
@@ -145,8 +160,8 @@ const Define: React.FC<{
       <div className="mt-[20px]"></div>
       <div className="flex flex-col gap-[20px]">
         <div className="flex gap-[20px]">
-          {/* <Button onClick={cicdBuild}>构建</Button> */}
-          <Button onClick={showChildrenDrawer}>构建</Button>
+          <Button onClick={cicdBuild}>构建</Button>
+          <Button onClick={showChildrenDrawer}>查看构建结果</Button>
         </div>
         <Button
           className="w-full"

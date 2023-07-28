@@ -20,15 +20,16 @@ export class Product {
   @Column('varchar')
   cicd: string;
 
-  @Column('varchar')
-  env: string;
+  // @Column('varchar')
+  // env: string;
 
   @Column('json')
   gitlab: {
     label: string;
     value: number;
     key: string;
-    ulr: string;
+    url: string;
+    hooksId: number | string;
   };
   @Column('longtext')
   pipeline: string;

@@ -168,4 +168,18 @@ export class JenkinsService {
 
     return { error: 'No stage information found.' };
   }
+
+  /**
+   * @description: Delete a Jenkins job.
+   */
+  async deleteJenkins(jobName: string) {
+    const jenkins = this.getJenkins();
+    const isExist = await jenkins.job.exists(jobName);
+
+    if (isExist) {
+      return jenkins.job.destroy(jobName);
+    }
+
+    return 'Job does not exist.';
+  }
 }

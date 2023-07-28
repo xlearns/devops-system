@@ -124,14 +124,23 @@ const Project: React.FC<unknown> = () => {
             <StepsForm
               formRef={formRef}
               onFinish={async (values) => {
-                await apiHttp.post<IRequest>("product/create", {
-                  data: {
-                    product: {
-                      ...values,
-                      pipeline: code,
+                await apiHttp.post<IRequest>(
+                  "product/create",
+                  {
+                    data: {
+                      product: {
+                        ...values,
+                        pipeline: code,
+                      },
                     },
                   },
-                });
+                  {
+                    beforeRequestCallback: (config: Record<string, string>) => {
+                      config["timeout"] = "100000";
+                      return config;
+                    },
+                  }
+                );
                 getProduct();
                 setVisible(false);
               }}

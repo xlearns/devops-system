@@ -80,13 +80,13 @@ const Base: React.FC<IPort> = (props) => {
         rules={[{ required: true }]}
       />
 
-      <ProFormSelect
+      {/* <ProFormSelect
         name="env"
         label="环境"
         options={environments}
         placeholder="Please select"
         rules={[{ required: true }]}
-      />
+      /> */}
     </>
   );
 };

@@ -4,12 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '@/entities/Product';
 import { interceptOfKey } from '@/shared/utils/command';
+import { GitlabService } from '@/modules/gitlab/gitlab.service';
+import { JenkinsService } from '@/modules/jenkins/jenkins.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly ProductRepo: Repository<Product>,
+    private readonly gitlab: GitlabService,
+    private readonly JenkinsService: JenkinsService,
   ) {}
 
   async create(rep: Product) {
@@ -25,7 +29,6 @@ export class ProductService {
       'description',
       'branch',
       'cicd',
-      'env',
       'gitlab',
     ]);
     if (intercept) {
@@ -55,7 +58,14 @@ export class ProductService {
   }
 
   async remove(id: number) {
-    await this.findOneById(id);
+    const { gitlab, id: idx } = await this.findOneById(id);
+
+    if (gitlab) {
+      const { hooksId, key } = gitlab;
+      const name = `${key}-${idx}`;
+      this.gitlab.removeWebHookApi(key, hooksId).catch((e) => {});
+      this.JenkinsService.deleteJenkins(name).catch((e) => {});
+    }
     await this.ProductRepo.delete(id);
     return {
       data: 'delete successfully',

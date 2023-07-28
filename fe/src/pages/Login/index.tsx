@@ -1,3 +1,4 @@
+import { GITLAB } from "@/constants";
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -16,7 +17,7 @@ import {
 } from "@ant-design/pro-components";
 import { Space, Tabs, message } from "antd";
 import type { CSSProperties } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 type LoginType = "phone" | "account";
 const iconStyles: CSSProperties = {
@@ -28,14 +29,14 @@ const iconStyles: CSSProperties = {
 };
 
 function gotoGitlab() {
-  const gitlab = "http://192.168.10.61";
   const client_id =
     "4320e6b76caa6f63f5cd250d2e07a9dca6fd3ce1ea2ae93ca6ffc63cc18544f4";
-  const redirect_uri = "http://localhost:8000";
+  const { protocol, host } = window.location;
+  const redirect_uri = `${protocol}//${host}`;
   const response_type = "token";
   const state = "linda";
   const scope = "api read_user read_registry openid";
-  window.location.href = `${gitlab}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}&&scope=${scope}`;
+  window.location.href = `${GITLAB}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}&&scope=${scope}`;
 }
 
 const Login: React.FC<unknown> = () => {

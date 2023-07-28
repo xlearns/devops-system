@@ -1,5 +1,5 @@
 // 全局共享数据示例
-import { DEFAULT_NAME, Project_Info } from '@/constants';
+import { DEFAULT_NAME, PROJECT_INFO } from '@/constants';
 import { useState } from 'react';
 
 type TNString = string | number;
@@ -23,7 +23,7 @@ export interface IProject {
 
 const useUser = () => {
   const [name, setName] = useState<string>(DEFAULT_NAME);
-  const [project, setProject] = useState<IProject[]>(Project_Info);
+  const [project, setProject] = useState<IProject[]>(PROJECT_INFO);
   return {
     name,
     setName,

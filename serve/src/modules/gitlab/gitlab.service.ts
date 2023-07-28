@@ -143,6 +143,20 @@ export class GitlabService {
     await this.#api.ProjectHooks.add(projectId, targetUrl, config);
   }
 
+  async removeWebHookApi(projectId, hooksId) {
+    await this.httpService.axiosRef.delete(
+      `${this.config.get(
+        'GIT_URL',
+      )}/api/v4/projects/${projectId}/hooks/${hooksId}`,
+      {
+        headers: {
+          Accept: '*/*',
+          Authorization: `Bearer ${this.#token}`,
+        },
+      },
+    );
+  }
+
   async addWebHookApi(
     projectId,
     targetUrl,
@@ -154,17 +168,7 @@ export class GitlabService {
 
     try {
       if (hooksId) {
-        await this.httpService.axiosRef.delete(
-          `${this.config.get(
-            'GIT_URL',
-          )}/api/v4/projects/${projectId}/hooks/${hooksId}`,
-          {
-            headers: {
-              Accept: '*/*',
-              Authorization: `Bearer ${this.#token}`,
-            },
-          },
-        );
+        await this.removeWebHookApi(projectId, hooksId);
       }
       const { data } = await this.httpService.axiosRef.post(url, null, {
         headers: {
