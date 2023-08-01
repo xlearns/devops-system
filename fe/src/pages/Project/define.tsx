@@ -144,7 +144,7 @@ const Define: React.FC<{
       </Card>
       <div className="mt-[20px]"></div>
       <Card title="流水线" bordered={false}>
-        {/* 预装环境 -> run common */}
+        {/* [预装环境/内置一些操作](search commod list) -> run common -> add queue */}
         {false && <Button className="my-[20px]">ADD RULE</Button>}
         <CodeMirror
           className="flex-1"

@@ -3,6 +3,7 @@
 - Automate environment configuration
 - microservice
 - CICD
+  - configurable
 - GitLab pipeline
 - Jenkins pipeline
 - Containerization and Orchestration
@@ -19,5 +20,5 @@
 - Environment Management
   - IaC
     - Ansible
-    - Terraform
+      - Using Ansible to manage multiple servers, during deployment, execute relevant scripts on target servers through Ansible to generate corresponding Dockerfiles based on configurations, such as custom environments. Copy the required files into the containers to complete the deployment with specified IP and custom environment
 - Automated Deployment and Rollback
