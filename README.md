@@ -1,5 +1,14 @@
 # target
 
+- Deploy any server
+- configure any server
+- visualized operation
+  - Installation environment
+  - Execute Command
+- Operation Log
+
+# feature
+
 - Automate environment configuration
 - microservice
 - CICD
